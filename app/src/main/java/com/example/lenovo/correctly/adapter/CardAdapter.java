@@ -50,19 +50,6 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> im
         return mItems.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView imgThumbnail;
-        public TextView tvMovie;
-        public CardView cardView;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            imgThumbnail = (ImageView) itemView.findViewById(R.id.img_thumbnail);
-            tvMovie = (TextView) itemView.findViewById(R.id.tv_movie);
-            cardView = (CardView) itemView.findViewById(R.id.card_view);
-        }
-    }
-
     @Override
     public void onClick(View v) {
         if (v instanceof CardView) {
@@ -77,6 +64,19 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> im
 
     public interface Listener {
         void onItemClicked(Movie movie);
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder {
+        public ImageView imgThumbnail;
+        public TextView tvMovie;
+        public CardView cardView;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            imgThumbnail = (ImageView) itemView.findViewById(R.id.img_thumbnail);
+            tvMovie = (TextView) itemView.findViewById(R.id.tv_movie);
+            cardView = (CardView) itemView.findViewById(R.id.card_view);
+        }
     }
 
 }

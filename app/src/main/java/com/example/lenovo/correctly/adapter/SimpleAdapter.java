@@ -51,11 +51,12 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.ViewHolder
         return mItems.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder{
+    class ViewHolder extends RecyclerView.ViewHolder {
         public TextView itemView;
+
         public ViewHolder(View itemView) {
             super(itemView);
-            this.itemView = (TextView)itemView.findViewById(R.id.tv_recycler_view_item);
+            this.itemView = (TextView) itemView.findViewById(R.id.tv_recycler_view_item);
         }
     }
 }

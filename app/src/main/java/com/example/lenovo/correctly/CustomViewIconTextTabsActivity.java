@@ -11,13 +11,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.example.lenovo.correctly.R;
 import com.example.lenovo.correctly.fragments.OneFragment;
 import com.example.lenovo.correctly.fragments.ThreeFragment;
 import com.example.lenovo.correctly.fragments.TwoFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CustomViewIconTextTabsActivity extends AppCompatActivity {
 
@@ -65,7 +64,6 @@ public class CustomViewIconTextTabsActivity extends AppCompatActivity {
 
     /**
      * Adding fragments to ViewPager
-     * @param viewPager
      */
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
