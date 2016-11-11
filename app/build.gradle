@@ -4,8 +4,8 @@ android {
     compileSdkVersion 24
     buildToolsVersion "24.0.3"
     defaultConfig {
-        applicationId "com.correctlyteam.correctly"
-        minSdkVersion 21
+        applicationId "com.example.lenovo.correctly"
+        minSdkVersion 23
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
@@ -25,6 +25,11 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:support-v4:24.2.1'
     compile 'com.android.support:design:24.2.1'
     testCompile 'junit:junit:4.12'
+    compile 'com.android.support:cardview-v7:24.0.+'
+    compile 'com.android.support:recyclerview-v7:24.0.+'
+    compile 'com.google.code.gson:gson:2.4'
+    compile 'com.ToxicBakery.viewpager.transforms:view-pager-transforms:1.2.32@aar'
 }
