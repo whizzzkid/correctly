@@ -19,6 +19,7 @@ import com.ToxicBakery.viewpager.transforms.CubeOutTransformer;
 import com.example.lenovo.correctly.fragments.FourFragment;
 import com.example.lenovo.correctly.fragments.OneFragment;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,6 +57,17 @@ public class MainActivity extends AppCompatActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
+        try {
+            Field mScroller;
+            mScroller = ViewPager.class.getDeclaredField("mScroller");
+            mScroller.setAccessible(true);
+            FixedSpeedScroller scroller = new FixedSpeedScroller(viewPager.getContext());
+
+            mScroller.set(viewPager, scroller);
+        } catch (NoSuchFieldException e) {
+        } catch (IllegalArgumentException e) {
+        } catch (IllegalAccessException e) {
+        }
 
 
         viewPager.setPageTransformer(true, new CubeOutTransformer());
