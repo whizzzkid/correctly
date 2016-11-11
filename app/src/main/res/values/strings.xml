@@ -33,5 +33,8 @@
     <string name="title_activity_main2">Main2Activity</string>
 
     <string name="hello_world">Hello world!</string>
+    <string name="tab_three">THREE</string>
+    <string name="tab_two">TWO</string>
+    <string name="tab_one">one</string>
 
 </resources>
