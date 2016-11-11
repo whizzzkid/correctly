@@ -7,7 +7,6 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -48,10 +47,6 @@ public class OneFragment extends Fragment implements CardAdapter.Listener {
         if (movie != null) {
             Toast.makeText(getContext(), "You just selected " + movie.name + "!", Toast.LENGTH_SHORT).show();
         }
-        ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.viewpager);
-
-
-        viewPager.setCurrentItem(1, true);
 
 
 // Commit the transaction
