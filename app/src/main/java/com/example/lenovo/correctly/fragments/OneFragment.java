@@ -46,7 +46,7 @@ public class OneFragment extends Fragment implements CardAdapter.Listener {
     @Override
     public void onItemClicked(Topic topic) {
         if (topic != null) {
-            //Toast.makeText(getContext(), "You just selected " + topic.name + "!", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getContext(), "You just selected " + topic+ "!", Toast.LENGTH_SHORT).show();
         }
 
         ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.viewpager);
