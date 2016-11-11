@@ -18,19 +18,12 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.ViewHolder
     public SimpleAdapter() {
         super();
         mItems = new ArrayList<String>();
-        mItems.add("Amazing Spiderman 2");
-        mItems.add("The Guardians of Galaxy");
-        mItems.add("What If");
-        mItems.add("Big Hero 6");
-        mItems.add("The Hunger Game");
-        mItems.add("X-men: Days of Future Past");
-        mItems.add("The Lego Movie");
-        mItems.add("How to Train Your Dragon 2");
-        mItems.add("Maleficent");
-        mItems.add("22 Jump Street");
-        mItems.add("The Maze Runner");
-        mItems.add("Horrible Bosses 2");
-        mItems.add("Night at the Museum 3");
+        mItems.add("Travel");
+        mItems.add("City");
+        mItems.add("Family");
+        mItems.add("Calendar");
+        mItems.add("School");
+        mItems.add("Home");
     }
 
     @Override
