@@ -1,5 +1,6 @@
 package com.example.lenovo.correctly.fragments;
 
+import com.example.lenovo.correctly.entity.Topic;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -7,6 +8,7 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,7 +18,6 @@ import android.widget.Toast;
 
 import com.example.lenovo.correctly.R;
 import com.example.lenovo.correctly.adapter.CardAdapter;
-import com.example.lenovo.correctly.entity.Movie;
 import com.example.lenovo.correctly.utils.BitmapUtils;
 import com.example.lenovo.correctly.utils.FileReader;
 
@@ -43,10 +44,15 @@ public class OneFragment extends Fragment implements CardAdapter.Listener {
     }
 
     @Override
-    public void onItemClicked(Movie movie) {
-        if (movie != null) {
-            Toast.makeText(getContext(), "You just selected " + movie.name + "!", Toast.LENGTH_SHORT).show();
+    public void onItemClicked(Topic topic) {
+        if (topic != null) {
+            Toast.makeText(getContext(), "You just selected " + topic.name + "!", Toast.LENGTH_SHORT).show();
         }
+
+        ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.viewpager);
+
+
+        viewPager.setCurrentItem(1, true);
 
 
 // Commit the transaction
@@ -79,7 +85,7 @@ public class OneFragment extends Fragment implements CardAdapter.Listener {
     }
 
 
-    class LoadMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
+    class LoadMoviesTask extends AsyncTask<Void, Void, List<Topic>> {
         ProgressDialog dialog;
 
         @Override
@@ -89,15 +95,15 @@ public class OneFragment extends Fragment implements CardAdapter.Listener {
         }
 
         @Override
-        protected List<Movie> doInBackground(Void... params) {
+        protected List<Topic> doInBackground(Void... params) {
             try {
                 String strMovies = FileReader.getStringFromFile(getContext().getAssets(), "movies.json");
                 Gson gson = new Gson();
-                List<Movie> movies = gson.fromJson(strMovies, new TypeToken<List<Movie>>() {
+                List<Topic> movies = gson.fromJson(strMovies, new TypeToken<List<Topic>>() {
                 }.getType());
 
-                for (Movie movie : movies) {
-                    movie.imageBitmap = BitmapUtils.getBitmapFromAsset(getContext().getAssets(), movie.image);
+                for (Topic topic : movies) {
+                    topic.imageBitmap = BitmapUtils.getBitmapFromAsset(getContext().getAssets(), topic.image);
                 }
 
                 return movies;
@@ -108,7 +114,7 @@ public class OneFragment extends Fragment implements CardAdapter.Listener {
         }
 
         @Override
-        protected void onPostExecute(List<Movie> movies) {
+        protected void onPostExecute(List<Topic> movies) {
             dialog.dismiss();
             ((CardAdapter) mAdapter).getItems().addAll(movies);
             mAdapter.notifyDataSetChanged();

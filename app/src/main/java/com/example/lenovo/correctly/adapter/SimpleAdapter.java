@@ -24,7 +24,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.ViewHolder
         mItems.add("Big Hero 6");
         mItems.add("The Hunger Game");
         mItems.add("X-men: Days of Future Past");
-        mItems.add("The Lego Movie");
+        mItems.add("The Lego Topic");
         mItems.add("How to Train Your Dragon 2");
         mItems.add("Maleficent");
         mItems.add("22 Jump Street");

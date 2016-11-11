@@ -9,17 +9,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.lenovo.correctly.R;
-import com.example.lenovo.correctly.entity.Movie;
+import com.example.lenovo.correctly.entity.Topic;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> implements View.OnClickListener {
 
-    private List<Movie> mItems;
+    private List<Topic> mItems;
     private Listener mListener;
 
-    public CardAdapter(List<Movie> items, Listener listener) {
+    public CardAdapter(List<Topic> items, Listener listener) {
         if (items == null) {
             items = new ArrayList<>();
         }
@@ -36,12 +36,12 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> im
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
-        Movie movie = mItems.get(i);
-        viewHolder.tvMovie.setText(movie.name);
-        viewHolder.imgThumbnail.setImageBitmap(movie.imageBitmap);
+        Topic topic = mItems.get(i);
+        viewHolder.tvMovie.setText(topic.name);
+        viewHolder.imgThumbnail.setImageBitmap(topic.imageBitmap);
         if (mListener != null) {
             viewHolder.cardView.setOnClickListener(this);
-            viewHolder.cardView.setTag(movie);
+            viewHolder.cardView.setTag(topic);
         }
     }
 
@@ -53,17 +53,17 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> im
     @Override
     public void onClick(View v) {
         if (v instanceof CardView) {
-            Movie movie = (Movie) v.getTag();
-            mListener.onItemClicked(movie);
+            Topic topic = (Topic) v.getTag();
+            mListener.onItemClicked(topic);
         }
     }
 
-    public List<Movie> getItems() {
+    public List<Topic> getItems() {
         return mItems;
     }
 
     public interface Listener {
-        void onItemClicked(Movie movie);
+        void onItemClicked(Topic topic);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
