@@ -1,0 +1,28 @@
+[
+  {
+    "name": "Travel",
+    "image": "images/travel.jpg"
+  },
+  {
+    "name": "City",
+    "image": "images/city.jpg"
+  },
+  {
+    "name": "Family",
+    "image": "images/family.jpg"
+  },
+  {
+    "name": "School",
+    "image": "images/school.jpg"
+  },
+  {
+    "name": "Home",
+    "image": "images/home.jpg"
+  },
+
+
+  {
+    "name": "Calendar",
+    "image": "images/calendar.jpg"
+  }
+]
