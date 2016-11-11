@@ -97,7 +97,7 @@ public class OneFragment extends Fragment implements CardAdapter.Listener {
         @Override
         protected List<Topic> doInBackground(Void... params) {
             try {
-                String strMovies = FileReader.getStringFromFile(getContext().getAssets(), "movies.json");
+                String strMovies = FileReader.getStringFromFile(getContext().getAssets(), "topics.json");
                 Gson gson = new Gson();
                 List<Topic> movies = gson.fromJson(strMovies, new TypeToken<List<Topic>>() {
                 }.getType());
