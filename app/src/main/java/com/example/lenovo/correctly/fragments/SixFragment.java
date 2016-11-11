@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.example.lenovo.correctly.R;
 
 
-public class SixFragment extends Fragment{
+public class SixFragment extends Fragment {
 
     public SixFragment() {
         // Required empty public constructor

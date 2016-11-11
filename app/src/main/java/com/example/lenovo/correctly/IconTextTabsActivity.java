@@ -9,13 +9,12 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.example.lenovo.correctly.R;
 import com.example.lenovo.correctly.fragments.OneFragment;
 import com.example.lenovo.correctly.fragments.ThreeFragment;
 import com.example.lenovo.correctly.fragments.TwoFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class IconTextTabsActivity extends AppCompatActivity {
 

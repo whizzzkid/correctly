@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.example.lenovo.correctly.R;
 
 
-public class EightFragment extends Fragment{
+public class EightFragment extends Fragment {
 
     public EightFragment() {
         // Required empty public constructor
