@@ -1,6 +1,5 @@
 package com.example.lenovo.correctly.fragments;
 
-import com.example.lenovo.correctly.entity.Topic;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -18,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.lenovo.correctly.R;
 import com.example.lenovo.correctly.adapter.CardAdapter;
+import com.example.lenovo.correctly.entity.Topic;
 import com.example.lenovo.correctly.utils.BitmapUtils;
 import com.example.lenovo.correctly.utils.FileReader;
 
@@ -30,6 +30,7 @@ public class OneFragment extends Fragment implements CardAdapter.Listener {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+
     public OneFragment() {
         // Required empty public constructor
     }

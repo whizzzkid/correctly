@@ -30,18 +30,14 @@ import io.grpc.stub.StreamObserver;
 
 public class StreamingRecognizeClient implements
         StreamObserver<StreamingRecognizeResponse> {
-    private final int mSamplingRate;
-
-    private final ManagedChannel mChannel;
-
-    private final SpeechGrpc.SpeechStub mSpeechClient;
-
-    private boolean mIsInitialized = false;
-
-    private Handler uiHandler;
-
     private static final List<String> OAUTH2_SCOPES =
             Arrays.asList("https://www.googleapis.com/auth/cloud-platform");
+    private final int mSamplingRate;
+    private final ManagedChannel mChannel;
+    private final SpeechGrpc.SpeechStub mSpeechClient;
+    StreamObserver<StreamingRecognizeRequest> requestObserver;
+    private boolean mIsInitialized = false;
+    private Handler uiHandler;
 
     /**
      * Construct client connecting to Cloud Speech server at {@code host:port}.
@@ -56,11 +52,24 @@ public class StreamingRecognizeClient implements
         mSpeechClient = SpeechGrpc.newStub(channel);
     }
 
+    public static ManagedChannel createChannel(String host, int port, InputStream credentials)
+            throws IOException {
+        GoogleCredentials creds = GoogleCredentials.fromStream(credentials);
+        creds = creds.createScoped(OAUTH2_SCOPES);
+        OkHttpChannelProvider provider = new OkHttpChannelProvider();
+        OkHttpChannelBuilder builder = provider.builderForAddress(host, port);
+        ManagedChannel channel = builder.intercept(new ClientAuthInterceptor(creds, Executors
+                .newSingleThreadExecutor
+                        ()))
+                .build();
+
+        credentials.close();
+        return channel;
+    }
+
     public void shutdown() throws InterruptedException {
         mChannel.shutdown().awaitTermination(5, TimeUnit.SECONDS);
     }
-
-    StreamObserver<StreamingRecognizeRequest> requestObserver;
 
     private void initializeRecognition() throws InterruptedException, IOException {
         requestObserver = mSpeechClient.streamingRecognize(this);
@@ -126,20 +135,5 @@ public class StreamingRecognizeClient implements
         Log.i(StreamingRecognizeClient.this.getClass().getSimpleName(), "onComplete.");
         requestObserver.onCompleted();
         mIsInitialized = false;
-    }
-
-    public static ManagedChannel createChannel(String host, int port, InputStream credentials)
-            throws IOException {
-        GoogleCredentials creds = GoogleCredentials.fromStream(credentials);
-        creds = creds.createScoped(OAUTH2_SCOPES);
-        OkHttpChannelProvider provider = new OkHttpChannelProvider();
-        OkHttpChannelBuilder builder = provider.builderForAddress(host, port);
-        ManagedChannel channel =  builder.intercept(new ClientAuthInterceptor(creds, Executors
-                .newSingleThreadExecutor
-                        ()))
-                .build();
-
-        credentials.close();
-        return channel;
     }
 }
