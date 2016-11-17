@@ -1,81 +1,79 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.example.lenovo.correctly.fragments.FourFragment">
-
-
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="com.example.lenovo.correctly.fragments.FourFragment">
 
 
     <TextView
-        android:id="@+id/txt_output"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:textSize="26dp"
-        android:textStyle="normal"
-        android:layout_alignParentStart="true" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="60dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true">
-
-        <TextView
+            android:id="@+id/txt_output"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Press microphone to check pronunciation"
 
-            android:textSize="15dp"
-            android:id="@+id/textView"
-            android:textStyle="normal" />
+            android:textSize="26dp"
+            android:textStyle="normal"
+            android:layout_alignParentStart="true"/>
+
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="60dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Press microphone to check pronunciation"
+
+                android:textSize="15dp"
+                android:id="@+id/textView"
+                android:textStyle="normal"/>
     </LinearLayout>
 
     <ImageButton
-        android:id="@+id/btn_mic"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="@null"
-        android:scaleType="centerCrop"
-        android:src="@drawable/microphone"
-        android:layout_marginTop="16dp"
-        android:layout_below="@+id/editText"
-        android:layout_alignStart="@+id/editText" />
+            android:id="@+id/btn_mic"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@null"
+            android:scaleType="centerCrop"
+            android:src="@drawable/microphone"
+            android:layout_marginTop="16dp"
+            android:layout_below="@+id/editText"
+            android:layout_alignStart="@+id/editText"/>
 
     <ImageButton
-        android:id="@+id/btn_play"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="@null"
-        android:scaleType="centerCrop"
-        android:src="@drawable/play"
-        android:layout_alignTop="@+id/btn_mic"
-        android:layout_alignEnd="@+id/editText" />
+            android:id="@+id/btn_play"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@null"
+            android:scaleType="centerCrop"
+            android:src="@drawable/play"
+            android:layout_alignTop="@+id/btn_mic"
+            android:layout_alignEnd="@+id/editText"/>
 
     <RatingBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/ratingBar"
-        style="?android:attr/ratingBarStyleIndicator"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ratingBar"
+            style="?android:attr/ratingBarStyleIndicator"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"/>
 
     <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:text='Say: \n "Je sais" \n You can do better! Try again!'
-        android:ems="10"
-        android:id="@+id/editText"
-        android:layout_marginTop="135dp"
-        android:layout_below="@+id/txt_output"
-        android:layout_centerHorizontal="true" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:text='Say: \n "Je sais" \n You can do better! Try again!'
+            android:ems="10"
+            android:id="@+id/editText"
+            android:layout_marginTop="135dp"
+            android:layout_below="@+id/txt_output"
+            android:layout_centerHorizontal="true"/>
 
 
 </RelativeLayout>
