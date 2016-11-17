@@ -78,14 +78,14 @@ public class OneFragment extends Fragment implements CardAdapter.Listener {
         mAdapter = new CardAdapter(null, this);
         mRecyclerView.setAdapter(mAdapter);
 
-        new LoadMoviesTask().execute();
+        new LoadtopicsTask().execute();
         return myFragmentView;
         // Inflate the layout for this fragment
 
     }
 
 
-    class LoadMoviesTask extends AsyncTask<Void, Void, List<Topic>> {
+    class LoadtopicsTask extends AsyncTask<Void, Void, List<Topic>> {
         ProgressDialog dialog;
 
         @Override
@@ -97,16 +97,16 @@ public class OneFragment extends Fragment implements CardAdapter.Listener {
         @Override
         protected List<Topic> doInBackground(Void... params) {
             try {
-                String strMovies = FileReader.getStringFromFile(getContext().getAssets(), "topics.json");
+                String strtopics = FileReader.getStringFromFile(getContext().getAssets(), "topics.json");
                 Gson gson = new Gson();
-                List<Topic> movies = gson.fromJson(strMovies, new TypeToken<List<Topic>>() {
+                List<Topic> topics = gson.fromJson(strtopics, new TypeToken<List<Topic>>() {
                 }.getType());
 
-                for (Topic topic : movies) {
+                for (Topic topic : topics) {
                     topic.imageBitmap = BitmapUtils.getBitmapFromAsset(getContext().getAssets(), topic.image);
                 }
 
-                return movies;
+                return topics;
             } catch (IOException e) {
                 e.printStackTrace();
                 return null;
@@ -114,9 +114,9 @@ public class OneFragment extends Fragment implements CardAdapter.Listener {
         }
 
         @Override
-        protected void onPostExecute(List<Topic> movies) {
+        protected void onPostExecute(List<Topic> topics) {
             dialog.dismiss();
-            ((CardAdapter) mAdapter).getItems().addAll(movies);
+            ((CardAdapter) mAdapter).getItems().addAll(topics);
             mAdapter.notifyDataSetChanged();
         }
     }

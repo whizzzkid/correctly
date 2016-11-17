@@ -31,7 +31,9 @@ public class FourFragment extends Fragment {
 
     private final int SPEECH_RECOGNITION_CODE = 1;
     public TextView textView;
-    public EditText editText;
+    public TextView EnglishText;
+    public TextView FrenchText;
+   // public EditText editText;
     public RatingBar ratingBar;
     String text = "";
     TextToSpeech t1;
@@ -40,7 +42,20 @@ public class FourFragment extends Fragment {
     private ImageButton btnMicrophone;
     private ImageButton btnPlay;
     private View myFragmentView;
+    public int i=0;
+    public String[] list_of_wordsFrench = new String[]{"Bonjour", "Bonsoir", "Je m’appelle", "Je suis", "Une banque", "Magasin", "L’aeroport", "Merci", "Une voiture", "Carte de crédit"};
 
+
+    public String[] list_of_wordsEnglish=new String[]{"Good morning" ,
+            "Good evening" ,
+            "My name is" ,
+            "I am",
+            "Bank",
+            "Store",
+            "Airport",
+            "Thank you",
+            "Car",
+            "Credit card"};
     public FourFragment() {
         // Required empty public constructor
     }
@@ -54,29 +69,34 @@ public class FourFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        myFragmentView = inflater.inflate(R.layout.fragment_four, container, false);
-        textView = (TextView) myFragmentView.findViewById(R.id.textView);
-        editText = (EditText) myFragmentView.findViewById(R.id.editText);
-        text = "My name is Ben";
 
-        editText.setFocusable(false);
+
+        myFragmentView = inflater.inflate(R.layout.fragment_four, container, false);
+        EnglishText = (TextView) myFragmentView.findViewById(R.id.EnglishText);
+        FrenchText = (TextView) myFragmentView.findViewById(R.id.FrenhText);
+        //editText = (EditText) myFragmentView.findViewById(R.id.editText);
+     // text=list_of_wordsFrench[0];
+               //editText.setFocusable(false);
         // make "Lorem" (characters 0 to 5) red
-        sb = new SpannableStringBuilder("My name is Ben");
+       // sb = new SpannableStringBuilder(list_of_wordsFrench[0]);
 
 // Span to set text color to some RGB value
         final ForegroundColorSpan fcs = new ForegroundColorSpan(Color.rgb(158, 158, 158));
 
+        EnglishText.setText(list_of_wordsEnglish[0]);
+        FrenchText.setText(list_of_wordsFrench[0]);
+        // editText.setText(sb);
 
-        editText.setText(sb);
 
-        ratingBar = (RatingBar) myFragmentView.findViewById(R.id.ratingBar);
-        ratingBar.setProgress(9);
+
 
         t1 = new TextToSpeech(getContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
                 if (status != TextToSpeech.ERROR) {
-                    t1.setLanguage(Locale.UK);
+                    //
+                    t1.setLanguage(Locale.FRENCH);
+
                 }
             }
         });
@@ -85,8 +105,19 @@ public class FourFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-                String toSpeak = editText.getText().toString();
+               i++;
+               if(i<list_of_wordsFrench.length) {
+                   FrenchText.setText(list_of_wordsFrench[i]);
+                   EnglishText.setText(list_of_wordsEnglish[i]);
+               }
+                else {
+                   i = 0;
+                   FrenchText.setText(list_of_wordsFrench[i]);
+                   EnglishText.setText(list_of_wordsEnglish[i]);
+               }
+                String toSpeak = FrenchText.getText().toString();
                 t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+
             }
         });
 
@@ -162,7 +193,7 @@ public class FourFragment extends Fragment {
                         startPoint += initialText[i].length() + 1;
                     }
                     //textView.setText(Html.fromHtml("<i><small><font color=\"#c5c5c5\">" + "Competitor ID: " + "</font></small></i>" + "<font color=\"#47a842\">" +  + "</font>"));
-                    editText.setText(sb);
+                   //editText.setText(sb);
 
 
 // Set the text color for first 4 characters

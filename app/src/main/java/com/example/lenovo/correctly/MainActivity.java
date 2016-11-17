@@ -17,6 +17,7 @@ import com.ToxicBakery.viewpager.transforms.CubeOutTransformer;
 import com.example.lenovo.correctly.adapter.ViewPagerAdapter;
 import com.example.lenovo.correctly.fragments.FourFragment;
 import com.example.lenovo.correctly.fragments.OneFragment;
+import com.example.lenovo.correctly.fragments.TwoFragment;
 
 import java.lang.reflect.Field;
 
@@ -123,7 +124,8 @@ public class MainActivity extends AppCompatActivity
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new OneFragment(), "Topics");
         //adapter.addFragment(new TwoFragment(), "TWO");
-        adapter.addFragment(new FourFragment(), "Learn");
+        adapter.addFragment(new FourFragment(), "Word");
+        adapter.addFragment(new TwoFragment(), "Sentence");
         //adapter.addFragment(new ThreeFragment(), "THREE");
         viewPager.setAdapter(adapter);
     }
