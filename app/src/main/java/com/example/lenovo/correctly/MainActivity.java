@@ -23,10 +23,10 @@ import java.lang.reflect.Field;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    public int chosenTopic = 1;
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    public int chosenTopic=1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-         if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
 
