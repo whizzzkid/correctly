@@ -36,5 +36,7 @@
     <string name="tab_three">THREE</string>
     <string name="tab_two">TWO</string>
     <string name="tab_one">one</string>
+    <string name="start_recording">Start Recording</string>
+    <string name="stop_recording">Stop Recording</string>
 
 </resources>
