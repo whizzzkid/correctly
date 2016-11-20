@@ -42,9 +42,10 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
-        android:layout_marginTop="19dp"
+        android:layout_marginTop="16dp"
         android:layout_below="@+id/txt_output"
-        android:layout_alignParentStart="true">
+        android:layout_toEndOf="@+id/txt_output"
+        android:weightSum="1">
 
         <TextView
             android:layout_width="match_parent"
@@ -68,7 +69,7 @@
             android:src="@drawable/play"
             android:layout_below="@+id/btn_mic"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="97dp" />
+            android:layout_marginTop="5dp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -93,8 +94,25 @@
             android:layout_centerHorizontal="true" />
 
 
-        <TextView
-            android:layout_width="wrap_content"
+        <ScrollView android:id="@+id/textAreaScroller"
+            android:layout_width="fill_parent"
+            android:layout_height="600px"
+            android:layout_x="0px"
+            android:layout_y="100px"
+            android:scrollbars="vertical">
+            <TextView
+                android:id="@+id/mConsoleMsg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/fbedittext"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/fbedittext"
+                android:layout_marginTop="22dp"
+                android:lines="15"
+                android:text="dsds" />
+        </ScrollView>
+        <!--<TextView
+            android:layout_width="277dp"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
             android:text='111'
@@ -103,11 +121,12 @@
             android:ems="30"
             android:id="@+id/mConsoleMsg"
             android:layout_centerVertical="true"
-            />
-      <!--  <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"></ScrollView>
--->
+            android:maxLines = "10"
+            android:layout_weight="14.94" />-->
+        <!--  <ScrollView
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"></ScrollView>
+  -->
     </LinearLayout>
 
 </RelativeLayout>
