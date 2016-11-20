@@ -16,6 +16,7 @@ import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.method.ScrollingMovementMethod;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
@@ -127,7 +128,7 @@ public class FourFragment extends Fragment {
             public void handleMessage(Message msg) {
                 if (msg != null) {
                     mConsoleMsg.setText(TextFormat.printToString(
-                            (MessageOrBuilder) msg.obj) + mConsoleMsg.getText());
+                            (MessageOrBuilder) msg.obj)+"\n" + mConsoleMsg.getText());
                 }
                 super.handleMessage(msg);
             }
@@ -199,6 +200,7 @@ public class FourFragment extends Fragment {
         EnglishText = (TextView) myFragmentView.findViewById(R.id.EnglishText);
         FrenchText = (TextView) myFragmentView.findViewById(R.id.FrenhText);
         mConsoleMsg = (TextView) myFragmentView.findViewById(R.id.mConsoleMsg);
+        //mConsoleMsg.setMovementMethod(new ScrollingMovementMethod());
         //editText = (EditText) myFragmentView.findViewById(R.id.editText);
      // text=list_of_wordsFrench[0];
                //editText.setFocusable(false);
@@ -283,21 +285,7 @@ public class FourFragment extends Fragment {
         return myFragmentView;
     }
 
-    private void startSpeechToText() {
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
-                "Speak something...");
-        try {
-            startActivityForResult(intent, SPEECH_RECOGNITION_CODE);
-        } catch (ActivityNotFoundException a) {
-            Toast.makeText(getContext(),
-                    "Sorry! Speech recognition is not supported in this device.",
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
+
 
 
     @Override
