@@ -2,11 +2,11 @@
 .gradle
 /local.properties
 /.idea/workspace.xml
-/.idea/misc.xml
-/.idea/vcs.xml
 /.idea/libraries
 .DS_Store
 /build
 /captures
 .externalNativeBuild
 /gradle
+vcs.xml
+misc.xml
