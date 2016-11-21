@@ -66,8 +66,7 @@ public class TwoFragment extends Fragment {
     public String[] list_of_wordsFrench = new String[]{"Bonjour, je m’appelle Sam.",
             "J’ai douze ans.",
             "Vol numéro 210",
-            "J’ai une carte de crédit."
-             ,
+            "J’ai une carte de crédit",
             "Où est l’aéroport?"};
 
     private static final String HOSTNAME = "speech.googleapis.com";
@@ -85,10 +84,10 @@ public class TwoFragment extends Fragment {
     private int mBufferSize;
 
 
-    public String[] list_of_wordsEnglish=new String[]{"Hello, my name is Sam.", "I am twelve years old.",
+    public String[] list_of_wordsEnglish=new String[]{"Hello, my name is Sam.",
+            "I am twelve years old.",
             "Flight No. 210",
-            "I have a credit card."
-            ,
+            "I have a credit card.",
             "Where is the airport?"};
     public TwoFragment() {
         // Required empty public constructor
@@ -201,12 +200,6 @@ public class TwoFragment extends Fragment {
         EnglishText = (TextView) myFragmentView.findViewById(R.id.EnglishText);
         FrenchText = (TextView) myFragmentView.findViewById(R.id.FrenhText);
         mConsoleMsg = (TextView) myFragmentView.findViewById(R.id.mConsoleMsg);
-        //mConsoleMsg.setMovementMethod(new ScrollingMovementMethod());
-        //editText = (EditText) myFragmentView.findViewById(R.id.editText);
-        // text=list_of_wordsFrench[0];
-        //editText.setFocusable(false);
-        // make "Lorem" (characters 0 to 5) red
-        // sb = new SpannableStringBuilder(list_of_wordsFrench[0]);
 
 // Span to set text color to some RGB value
         final ForegroundColorSpan fcs = new ForegroundColorSpan(Color.rgb(158, 158, 158));
@@ -299,7 +292,8 @@ public class TwoFragment extends Fragment {
 
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    float[] confidence = data.getFloatArrayExtra(RecognizerIntent.EXTRA_CONFIDENCE_SCORES);
+                    float[] confidence = data.getFloatArrayExtra
+                            (RecognizerIntent.EXTRA_CONFIDENCE_SCORES);
                     String resText = result.get(0);
                     String st = "";
 
@@ -320,24 +314,18 @@ public class TwoFragment extends Fragment {
 
                     for (int i = 0; i < initialText.length; i++) {
                         if (initialText[i].toString().compareTo(initialText[i].toString()) == 0) {
-                            sb.setSpan(red, startPoint, startPoint + initialText[i].length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                            sb.setSpan(red, startPoint, startPoint + initialText[i].length(),
+                                    Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
 
                         } else {
-                            sb.setSpan(green, startPoint, startPoint + initialText[i].length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                            sb.setSpan(green, startPoint, startPoint + initialText[i].length(),
+                                    Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
 
                         }
                         startPoint += initialText[i].length() + 1;
                     }
-                    //textView.setText(Html.fromHtml("<i><small><font color=\"#c5c5c5\">" + "Competitor ID: " + "</font></small></i>" + "<font color=\"#47a842\">" +  + "</font>"));
-                    //editText.setText(sb);
-
-
-// Set the text color for first 4 characters
-
-
-// make them also bold
 
 
                 }
