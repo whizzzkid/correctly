@@ -129,6 +129,7 @@ public class FourFragment extends Fragment {
                 if (msg != null) {
                     mConsoleMsg.setText(TextFormat.printToString(
                             (MessageOrBuilder) msg.obj)+"\n" + mConsoleMsg.getText());
+
                 }
                 super.handleMessage(msg);
             }
