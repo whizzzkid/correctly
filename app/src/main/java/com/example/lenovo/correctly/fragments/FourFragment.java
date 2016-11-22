@@ -16,6 +16,7 @@ import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.method.ScrollingMovementMethod;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
@@ -127,7 +128,8 @@ public class FourFragment extends Fragment {
             public void handleMessage(Message msg) {
                 if (msg != null) {
                     mConsoleMsg.setText(TextFormat.printToString(
-                            (MessageOrBuilder) msg.obj) + mConsoleMsg.getText());
+                            (MessageOrBuilder) msg.obj)+"\n" + mConsoleMsg.getText());
+
                 }
                 super.handleMessage(msg);
             }
@@ -199,13 +201,7 @@ public class FourFragment extends Fragment {
         EnglishText = (TextView) myFragmentView.findViewById(R.id.EnglishText);
         FrenchText = (TextView) myFragmentView.findViewById(R.id.FrenhText);
         mConsoleMsg = (TextView) myFragmentView.findViewById(R.id.mConsoleMsg);
-        //editText = (EditText) myFragmentView.findViewById(R.id.editText);
-     // text=list_of_wordsFrench[0];
-               //editText.setFocusable(false);
-        // make "Lorem" (characters 0 to 5) red
-       // sb = new SpannableStringBuilder(list_of_wordsFrench[0]);
 
-// Span to set text color to some RGB value
         final ForegroundColorSpan fcs = new ForegroundColorSpan(Color.rgb(158, 158, 158));
 
         EnglishText.setText(list_of_wordsEnglish[0]);
@@ -283,21 +279,7 @@ public class FourFragment extends Fragment {
         return myFragmentView;
     }
 
-    private void startSpeechToText() {
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
-                "Speak something...");
-        try {
-            startActivityForResult(intent, SPEECH_RECOGNITION_CODE);
-        } catch (ActivityNotFoundException a) {
-            Toast.makeText(getContext(),
-                    "Sorry! Speech recognition is not supported in this device.",
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
+
 
 
     @Override
@@ -310,7 +292,8 @@ public class FourFragment extends Fragment {
 
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    float[] confidence = data.getFloatArrayExtra(RecognizerIntent.EXTRA_CONFIDENCE_SCORES);
+                    float[] confidence = data.getFloatArrayExtra
+                            (RecognizerIntent.EXTRA_CONFIDENCE_SCORES);
                     String resText = result.get(0);
                     String st = "";
 
@@ -331,24 +314,19 @@ public class FourFragment extends Fragment {
 
                     for (int i = 0; i < initialText.length; i++) {
                         if (initialText[i].toString().compareTo(initialText[i].toString()) == 0) {
-                            sb.setSpan(red, startPoint, startPoint + initialText[i].length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                            sb.setSpan(red, startPoint, startPoint + initialText[i].length(),
+                                    Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
 
                         } else {
-                            sb.setSpan(green, startPoint, startPoint + initialText[i].length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                            sb.setSpan(green, startPoint, startPoint + initialText[i].length(),
+                                    Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
 
                         }
                         startPoint += initialText[i].length() + 1;
                     }
-                    //textView.setText(Html.fromHtml("<i><small><font color=\"#c5c5c5\">" + "Competitor ID: " + "</font></small></i>" + "<font color=\"#47a842\">" +  + "</font>"));
-                   //editText.setText(sb);
 
-
-// Set the text color for first 4 characters
-
-
-// make them also bold
 
 
                 }

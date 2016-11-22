@@ -91,8 +91,8 @@ public class OneFragment extends Fragment implements CardAdapter.Listener {
 
         @Override
         protected void onPreExecute() {
-            dialog = ProgressDialog.show(getContext(), getString(R.string.title_loading),
-                    getString(R.string.msg_loading), true);
+            /*dialog = ProgressDialog.show(getContext(), getString(R.string.title_loading),
+                    getString(R.string.msg_loading), true);*/
         }
 
         @Override
@@ -116,7 +116,7 @@ public class OneFragment extends Fragment implements CardAdapter.Listener {
 
         @Override
         protected void onPostExecute(List<Topic> topics) {
-            dialog.dismiss();
+            //dialog.dismiss();
             ((CardAdapter) mAdapter).getItems().addAll(topics);
             mAdapter.notifyDataSetChanged();
         }
