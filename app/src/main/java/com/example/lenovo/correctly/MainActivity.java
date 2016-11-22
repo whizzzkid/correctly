@@ -12,11 +12,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.ToxicBakery.viewpager.transforms.CubeOutTransformer;
 import com.example.lenovo.correctly.adapter.ViewPagerAdapter;
 import com.example.lenovo.correctly.fragments.FourFragment;
 import com.example.lenovo.correctly.fragments.OneFragment;
+import com.example.lenovo.correctly.fragments.ThreeFragment;
 import com.example.lenovo.correctly.fragments.TwoFragment;
 
 import java.lang.reflect.Field;
@@ -60,7 +62,7 @@ public class MainActivity extends AppCompatActivity
 
 
         viewPager.setPageTransformer(true, new CubeOutTransformer());
-        setupViewPager(viewPager);
+        setupViewPager(viewPager,1);
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
@@ -105,9 +107,13 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_words) {
 
-        } else if (id == R.id.nav_slideshow) {
+
+            //((ViewPagerAdapter)viewPager.getAdapter()).getItem(1).setUserVisibleHint(false);
+
+        } else if (id == R.id.nav_sentences) {
+
 
         } else if (id == R.id.nav_manage) {
 
@@ -120,13 +126,16 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void setupViewPager(ViewPager viewPager) {
+    private void setupViewPager(ViewPager viewPager, int fragment_number) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new OneFragment(), "Topics");
-        //adapter.addFragment(new TwoFragment(), "TWO");
+
+       adapter.addFragment(new OneFragment(), "Topics");
         adapter.addFragment(new FourFragment(), "Word");
-        adapter.addFragment(new TwoFragment(), "Sentence");
-        //adapter.addFragment(new ThreeFragment(), "THREE");
+
+        adapter.addFragment(new TwoFragment(), "Sentences");
+        adapter.addFragment(new ThreeFragment(), "Progress");
+                //adapter.addFragment(new ThreeFragment(), "THREE");
+
         viewPager.setAdapter(adapter);
     }
 

@@ -196,7 +196,7 @@ public class TwoFragment extends Fragment {
 
 
 
-        myFragmentView = inflater.inflate(R.layout.fragment_four, container, false);
+        myFragmentView = inflater.inflate(R.layout.fragment_two, container, false);
         EnglishText = (TextView) myFragmentView.findViewById(R.id.EnglishText);
         FrenchText = (TextView) myFragmentView.findViewById(R.id.FrenhText);
         mConsoleMsg = (TextView) myFragmentView.findViewById(R.id.mConsoleMsg);
