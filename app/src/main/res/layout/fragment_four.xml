@@ -5,30 +5,6 @@
                 tools:context="com.example.lenovo.correctly.fragments.FourFragment"
     android:background="#80bebebe">
 
-
-    <TextView
-            android:id="@+id/txt_output"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:textSize="26dp"
-            android:textStyle="normal"
-            android:layout_alignParentStart="true"/>
-
-
-    <!-- <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Press microphone to check pronunciation"
-
-        android:textSize="15dp"
-        android:id="@+id/textView"
-        android:textStyle="normal"
-        android:layout_above="@+id/linearLayout2"
-        android:layout_toEndOf="@+id/btn_mic"
-        android:layout_marginBottom="14dp" />-->
-
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
@@ -42,9 +18,13 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
-        android:layout_marginTop="19dp"
-        android:layout_below="@+id/txt_output"
-        android:layout_alignParentStart="true">
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginRight="10dp"
+
+        android:weightSum="1"
+        android:background="@drawable/shape_words">
 
         <TextView
             android:layout_width="match_parent"
@@ -68,7 +48,7 @@
             android:src="@drawable/play"
             android:layout_below="@+id/btn_mic"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="97dp" />
+            android:layout_marginTop="5dp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -93,21 +73,24 @@
             android:layout_centerHorizontal="true" />
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:text='111'
-            android:textSize="20sp"
-            android:gravity="center"
-            android:ems="30"
-            android:id="@+id/mConsoleMsg"
-            android:layout_centerVertical="true"
-            />
-      <!--  <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"></ScrollView>
--->
+        <ScrollView android:id="@+id/textAreaScroller"
+            android:layout_width="fill_parent"
+            android:layout_height="600px"
+            android:layout_x="0px"
+            android:layout_y="100px"
+            android:scrollbars="vertical">
+            <TextView
+                android:id="@+id/mConsoleMsg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/fbedittext"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/fbedittext"
+                android:layout_marginTop="22dp"
+                
+                android:text="dsds" />
+        </ScrollView>
+
     </LinearLayout>
 
 </RelativeLayout>
