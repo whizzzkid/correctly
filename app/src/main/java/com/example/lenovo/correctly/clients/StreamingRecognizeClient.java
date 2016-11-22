@@ -35,7 +35,7 @@ public class StreamingRecognizeClient implements
     private final int mSamplingRate;
     private final ManagedChannel mChannel;
     private final SpeechGrpc.SpeechStub mSpeechClient;
-    StreamObserver<StreamingRecognizeRequest> requestObserver;
+    private StreamObserver<StreamingRecognizeRequest> requestObserver;
     private boolean mIsInitialized = false;
     private Handler uiHandler;
 
@@ -77,6 +77,8 @@ public class StreamingRecognizeClient implements
                 RecognitionConfig.newBuilder()
                         .setEncoding(AudioEncoding.LINEAR16)
                         .setSampleRate(mSamplingRate)
+                        .setLanguageCode("fr-FR")
+                        .setProfanityFilter(true)
                         .build();
         StreamingRecognitionConfig streamingConfig =
                 StreamingRecognitionConfig.newBuilder()

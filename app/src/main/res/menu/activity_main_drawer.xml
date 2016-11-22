@@ -4,13 +4,13 @@
     <group android:checkableBehavior="single">
 
         <item
-                android:id="@+id/nav_gallery"
+                android:id="@+id/nav_words"
                 android:icon="@drawable/ic_menu_gallery"
-                android:title="Learn"/>
+                android:title="Words"/>
         <item
-                android:id="@+id/nav_slideshow"
+                android:id="@+id/nav_sentences"
                 android:icon="@drawable/ic_menu_slideshow"
-                android:title="Live"/>
+                android:title="Sentences"/>
         <item
                 android:id="@+id/nav_manage"
                 android:icon="@drawable/ic_menu_manage"
