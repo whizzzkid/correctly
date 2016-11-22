@@ -5,17 +5,6 @@
                 tools:context="com.example.lenovo.correctly.fragments.FourFragment"
     android:background="#80bebebe">
 
-
-    <TextView
-            android:id="@+id/txt_output"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:textSize="26dp"
-            android:textStyle="normal"
-            android:layout_alignParentStart="true"/>
-
-
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
@@ -29,10 +18,13 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
-        android:layout_marginTop="16dp"
-        android:layout_below="@+id/txt_output"
-        android:layout_toEndOf="@+id/txt_output"
-        android:weightSum="1">
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginRight="10dp"
+
+        android:weightSum="1"
+        android:background="@drawable/shape_words">
 
         <TextView
             android:layout_width="match_parent"
