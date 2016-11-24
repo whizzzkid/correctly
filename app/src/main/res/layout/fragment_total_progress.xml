@@ -2,13 +2,13 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:context="com.example.lenovo.correctly.fragments.TenFragment">
+                tools:context="com.example.lenovo.correctly.fragments.TotalProgressFragment">
 
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/ten"
-            android:textSize="40dp"
+            android:text="@string/six"
+            android:textSize="40sp"
             android:textStyle="bold"
             android:layout_centerInParent="true"/>
 
