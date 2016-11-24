@@ -3,11 +3,9 @@ package com.example.lenovo.correctly.fragments;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
+import android.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -25,39 +23,19 @@ import java.io.IOException;
 import java.util.List;
 
 
-public class OneFragment extends Fragment implements CardAdapter.Listener {
-    private View myFragmentView;
-    private RecyclerView mRecyclerView;
+public class TopicsFragment extends Fragment implements CardAdapter.Listener {
     private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
 
-    public OneFragment() {
-        // Required empty public constructor
+    public TopicsFragment() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-       /* */
-
     }
 
     @Override
     public void onItemClicked(Topic topic) {
-        if (topic != null) {
-            //Toast.makeText(getContext(), "You just selected " + topic+ "!", Toast.LENGTH_SHORT).show();
-        }
-
-        ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.viewpager);
-
-
-        viewPager.setCurrentItem(1, true);
-
-
-// Commit the transaction
-
     }
 
     @Override
@@ -65,46 +43,45 @@ public class OneFragment extends Fragment implements CardAdapter.Listener {
                              Bundle savedInstanceState) {
 
 
-        myFragmentView = inflater.inflate(R.layout.fragment_one, container, false);
-        mRecyclerView = (RecyclerView) myFragmentView.findViewById(R.id.my_recycler_view);
+        View myFragmentView = inflater.inflate(R.layout.fragment_topics, container, false);
+        RecyclerView mRecyclerView = (RecyclerView) myFragmentView.findViewById(R.id.my_recycler_view);
         //assert mRecyclerView != null;
         if (mRecyclerView == null)
             Toast.makeText(getContext(), "empty :/", Toast.LENGTH_LONG);
         else
             Toast.makeText(getContext(), ":0", Toast.LENGTH_LONG);
         mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(getContext());
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         mAdapter = new CardAdapter(null, this);
         mRecyclerView.setAdapter(mAdapter);
 
-        new LoadtopicsTask().execute();
+        new LoadTopicsTask().execute();
         return myFragmentView;
         // Inflate the layout for this fragment
 
     }
 
 
-    class LoadtopicsTask extends AsyncTask<Void, Void, List<Topic>> {
-        ProgressDialog dialog;
+    class LoadTopicsTask extends AsyncTask<Void, Void, List<Topic>> {
 
         @Override
         protected void onPreExecute() {
-            /*dialog = ProgressDialog.show(getContext(), getString(R.string.title_loading),
-                    getString(R.string.msg_loading), true);*/
         }
 
         @Override
         protected List<Topic> doInBackground(Void... params) {
             try {
-                String strtopics = FileReader.getStringFromFile(getContext().getAssets(), "topics.json");
                 Gson gson = new Gson();
-                List<Topic> topics = gson.fromJson(strtopics, new TypeToken<List<Topic>>() {
-                }.getType());
+                List<Topic> topics = gson.fromJson(
+                        FileReader.getStringFromFile(
+                                getContext().getAssets(), "topics.json"),
+                        new TypeToken<List<Topic>>() {}.getType());
 
                 for (Topic topic : topics) {
-                    topic.imageBitmap = BitmapUtils.getBitmapFromAsset(getContext().getAssets(), topic.image);
+                    topic.imageBitmap = BitmapUtils.getBitmapFromAsset(
+                            getContext().getAssets(), topic.image);
                 }
 
                 return topics;
@@ -116,10 +93,8 @@ public class OneFragment extends Fragment implements CardAdapter.Listener {
 
         @Override
         protected void onPostExecute(List<Topic> topics) {
-            //dialog.dismiss();
             ((CardAdapter) mAdapter).getItems().addAll(topics);
             mAdapter.notifyDataSetChanged();
         }
     }
 }
-

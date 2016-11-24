@@ -3,7 +3,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/content_frame"
-                tools:context="com.example.lenovo.correctly.fragments.OneFragment"
+                tools:context="com.example.lenovo.correctly.fragments.TopicsFragment"
     android:background="#80bebebe">
 
 
