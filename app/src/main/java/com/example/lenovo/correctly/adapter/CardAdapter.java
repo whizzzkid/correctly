@@ -14,7 +14,8 @@ import com.example.lenovo.correctly.entity.Topic;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> implements View.OnClickListener {
+public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
+        implements View.OnClickListener {
 
     private List<Topic> mItems;
     private Listener mListener;
@@ -67,16 +68,15 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> im
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView imgThumbnail;
-        public TextView tvMovie;
-        public CardView cardView;
+        ImageView imgThumbnail;
+        TextView tvMovie;
+        CardView cardView;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
             imgThumbnail = (ImageView) itemView.findViewById(R.id.img_thumbnail);
             tvMovie = (TextView) itemView.findViewById(R.id.tv_movie);
             cardView = (CardView) itemView.findViewById(R.id.card_view);
         }
     }
-
 }

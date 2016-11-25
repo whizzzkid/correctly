@@ -1,8 +1,13 @@
 package com.example.lenovo.correctly.fragments;
 
-import android.annotation.SuppressLint;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.security.ProviderInstaller;
+import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.TextFormat;
+
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.AudioFormat;
@@ -13,32 +18,22 @@ import android.os.Handler;
 import android.os.Message;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import android.text.method.ScrollingMovementMethod;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.lenovo.correctly.MainActivity;
 import com.example.lenovo.correctly.R;
 import com.example.lenovo.correctly.clients.StreamingRecognizeClient;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.security.ProviderInstaller;
-import com.google.protobuf.MessageOrBuilder;
-import com.google.protobuf.TextFormat;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -47,13 +42,13 @@ import java.util.Locale;
 import io.grpc.ManagedChannel;
 
 
-public class FourFragment extends Fragment {
+public class SentenceLearnFragment extends Fragment {
 
     private final int SPEECH_RECOGNITION_CODE = 1;
     public TextView textView;
     public TextView EnglishText;
     public TextView FrenchText;
-   // public EditText editText;
+    // public EditText editText;
     public RatingBar ratingBar;
     String text = "";
     TextToSpeech t1;
@@ -63,7 +58,11 @@ public class FourFragment extends Fragment {
     private ImageButton btnPlay;
     private View myFragmentView;
     public int i=0;
-    public String[] list_of_wordsFrench = new String[]{"Bonjour", "Bonsoir", "Je m’appelle", "Je suis", "Une banque", "Magasin", "L’aeroport", "Merci", "Une voiture", "Carte de crédit"};
+    public String[] list_of_wordsFrench = new String[]{"Bonjour, je m’appelle Sam.",
+            "J’ai douze ans.",
+            "Vol numéro 210",
+            "J’ai une carte de crédit",
+            "Où est l’aéroport?"};
 
     private static final String HOSTNAME = "speech.googleapis.com";
     private static final int PORT = 443;
@@ -80,17 +79,12 @@ public class FourFragment extends Fragment {
     private int mBufferSize;
 
 
-    public String[] list_of_wordsEnglish=new String[]{"Good morning" ,
-            "Good evening" ,
-            "My name is" ,
-            "I am",
-            "Bank",
-            "Store",
-            "Airport",
-            "Thank you",
-            "Car",
-            "Credit card"};
-    public FourFragment() {
+    public String[] list_of_wordsEnglish=new String[]{"Hello, my name is Sam.",
+            "I am twelve years old.",
+            "Flight No. 210",
+            "I have a credit card.",
+            "Where is the airport?"};
+    public SentenceLearnFragment() {
         // Required empty public constructor
     }
 
@@ -197,11 +191,12 @@ public class FourFragment extends Fragment {
 
 
 
-        myFragmentView = inflater.inflate(R.layout.fragment_four, container, false);
-        EnglishText = (TextView) myFragmentView.findViewById(R.id.EnglishText);
-        FrenchText = (TextView) myFragmentView.findViewById(R.id.FrenhText);
+        myFragmentView = inflater.inflate(R.layout.fragment_sentence_learn, container, false);
+        EnglishText = (TextView) myFragmentView.findViewById(R.id.TranslationText);
+        FrenchText = (TextView) myFragmentView.findViewById(R.id.ChallengeText);
         mConsoleMsg = (TextView) myFragmentView.findViewById(R.id.mConsoleMsg);
 
+// Span to set text color to some RGB value
         final ForegroundColorSpan fcs = new ForegroundColorSpan(Color.rgb(158, 158, 158));
 
         EnglishText.setText(list_of_wordsEnglish[0]);
@@ -226,16 +221,16 @@ public class FourFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-               i++;
-               if(i<list_of_wordsFrench.length) {
-                   FrenchText.setText(list_of_wordsFrench[i]);
-                   EnglishText.setText(list_of_wordsEnglish[i]);
-               }
+                i++;
+                if(i<list_of_wordsFrench.length) {
+                    FrenchText.setText(list_of_wordsFrench[i]);
+                    EnglishText.setText(list_of_wordsEnglish[i]);
+                }
                 else {
-                   i = 0;
-                   FrenchText.setText(list_of_wordsFrench[i]);
-                   EnglishText.setText(list_of_wordsEnglish[i]);
-               }
+                    i = 0;
+                    FrenchText.setText(list_of_wordsFrench[i]);
+                    EnglishText.setText(list_of_wordsEnglish[i]);
+                }
                 String toSpeak = FrenchText.getText().toString();
                 t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
 
@@ -265,7 +260,7 @@ public class FourFragment extends Fragment {
                     //mRecordingBt.setText(R.string.start_recording);
                 } else {
                     if (mAudioRecord.getState() == AudioRecord.STATE_INITIALIZED) {
-                       // mRecordingBt.setText(R.string.stop_recording);
+                        // mRecordingBt.setText(R.string.stop_recording);
                         startRecording();
                     } else {
                         Log.i(this.getClass().getSimpleName(), "Not Initialized yet.");
@@ -326,7 +321,6 @@ public class FourFragment extends Fragment {
                         }
                         startPoint += initialText[i].length() + 1;
                     }
-
 
 
                 }

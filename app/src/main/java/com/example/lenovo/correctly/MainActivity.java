@@ -1,72 +1,81 @@
 package com.example.lenovo.correctly;
 
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.ToxicBakery.viewpager.transforms.CubeOutTransformer;
-import com.example.lenovo.correctly.adapter.ViewPagerAdapter;
-import com.example.lenovo.correctly.fragments.FourFragment;
-import com.example.lenovo.correctly.fragments.OneFragment;
-import com.example.lenovo.correctly.fragments.ThreeFragment;
-import com.example.lenovo.correctly.fragments.TwoFragment;
+import com.example.lenovo.correctly.fragments.TopicsFragment;
+import com.example.lenovo.correctly.utils.FragmentLoader;
 
-import java.lang.reflect.Field;
+import static android.content.ContentValues.TAG;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
-    public int chosenTopic = 1;
-    private Toolbar toolbar;
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
+public class MainActivity extends AppCompatActivity implements NavigationView
+        .OnNavigationItemSelectedListener {
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.v(TAG, "Populating DB");
+        //TODO [whizzzkid]: Populate DB Here.
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
-        try {
-            Field mScroller;
-            mScroller = ViewPager.class.getDeclaredField("mScroller");
-            mScroller.setAccessible(true);
-            FixedSpeedScroller scroller = new FixedSpeedScroller(viewPager.getContext());
+        // Adding back button if we're in a fragment other than main fragment.
+        getFragmentManager().addOnBackStackChangedListener(new FragmentManager
+                .OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+            if (getFragmentManager().getBackStackEntryCount() > 0) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                toolbar.setNavigationOnClickListener(new View
+                        .OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onBackPressed();
+                    }
+                });
+            } else {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            }
+            }
+        });
+        // Check that the activity is using the layout version with
+        // the fragment_container FrameLayout
+        if (findViewById(R.id.fragment_container) != null) {
 
-            mScroller.set(viewPager, scroller);
-        } catch (NoSuchFieldException e) {
-        } catch (IllegalArgumentException e) {
-        } catch (IllegalAccessException e) {
+            // However, if we're being restored from a previous state,
+            // then we don't need to do anything and should return or else
+            // we could end up with overlapping fragments.
+            if (savedInstanceState != null) {
+                return;
+            }
+
+            new FragmentLoader(getFragmentManager(), getIntent().getExtras(),
+                    new TopicsFragment()).Load();
         }
-
-
-        viewPager.setPageTransformer(true, new CubeOutTransformer());
-        setupViewPager(viewPager,1);
-
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
-
     }
 
     @Override
@@ -92,13 +101,8 @@ public class MainActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        return id == R.id.action_settings || super.onOptionsItemSelected(item);
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -109,11 +113,7 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_words) {
 
-
-            //((ViewPagerAdapter)viewPager.getAdapter()).getItem(1).setUserVisibleHint(false);
-
         } else if (id == R.id.nav_sentences) {
-
 
         } else if (id == R.id.nav_manage) {
 
@@ -125,18 +125,4 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-    private void setupViewPager(ViewPager viewPager, int fragment_number) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-
-       adapter.addFragment(new OneFragment(), "Topics");
-        adapter.addFragment(new FourFragment(), "Word");
-
-        adapter.addFragment(new TwoFragment(), "Sentences");
-        adapter.addFragment(new ThreeFragment(), "Progress");
-                //adapter.addFragment(new ThreeFragment(), "THREE");
-
-        viewPager.setAdapter(adapter);
-    }
-
 }
