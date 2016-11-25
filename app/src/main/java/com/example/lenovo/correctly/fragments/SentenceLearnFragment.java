@@ -192,8 +192,8 @@ public class SentenceLearnFragment extends Fragment {
 
 
         myFragmentView = inflater.inflate(R.layout.fragment_sentence_learn, container, false);
-        EnglishText = (TextView) myFragmentView.findViewById(R.id.EnglishText);
-        FrenchText = (TextView) myFragmentView.findViewById(R.id.FrenhText);
+        EnglishText = (TextView) myFragmentView.findViewById(R.id.TranslationText);
+        FrenchText = (TextView) myFragmentView.findViewById(R.id.ChallengeText);
         mConsoleMsg = (TextView) myFragmentView.findViewById(R.id.mConsoleMsg);
 
 // Span to set text color to some RGB value

@@ -45,9 +45,11 @@ import io.grpc.ManagedChannel;
 public class WordLearnFragment extends Fragment {
 
     private final int SPEECH_RECOGNITION_CODE = 1;
+    private String challenge;
+    private String translation;
     public TextView textView;
-    public TextView EnglishText;
-    public TextView FrenchText;
+    public TextView translationText;
+    public TextView challengeText;
    // public EditText editText;
     public RatingBar ratingBar;
     String text = "";
@@ -58,7 +60,6 @@ public class WordLearnFragment extends Fragment {
     private ImageButton btnPlay;
     private View myFragmentView;
     public int i=0;
-    public String[] list_of_wordsFrench = new String[]{"Bonjour", "Bonsoir", "Je m’appelle", "Je suis", "Une banque", "Magasin", "L’aeroport", "Merci", "Une voiture", "Carte de crédit"};
 
     private static final String HOSTNAME = "speech.googleapis.com";
     private static final int PORT = 443;
@@ -74,17 +75,6 @@ public class WordLearnFragment extends Fragment {
     private StreamingRecognizeClient mStreamingClient;
     private int mBufferSize;
 
-
-    public String[] list_of_wordsEnglish=new String[]{"Good morning" ,
-            "Good evening" ,
-            "My name is" ,
-            "I am",
-            "Bank",
-            "Store",
-            "Airport",
-            "Thank you",
-            "Car",
-            "Credit card"};
     public WordLearnFragment() {
         // Required empty public constructor
     }
@@ -184,6 +174,9 @@ public class WordLearnFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
+        this.challenge = (String) args.get("challenge");
+        this.translation = (String) args.get("translation");
     }
 
     @Override
@@ -193,14 +186,14 @@ public class WordLearnFragment extends Fragment {
 
 
         myFragmentView = inflater.inflate(R.layout.fragment_word_learn, container, false);
-        EnglishText = (TextView) myFragmentView.findViewById(R.id.EnglishText);
-        FrenchText = (TextView) myFragmentView.findViewById(R.id.FrenhText);
+        translationText = (TextView) myFragmentView.findViewById(R.id.TranslationText);
+        challengeText = (TextView) myFragmentView.findViewById(R.id.ChallengeText);
         mConsoleMsg = (TextView) myFragmentView.findViewById(R.id.mConsoleMsg);
 
         final ForegroundColorSpan fcs = new ForegroundColorSpan(Color.rgb(158, 158, 158));
 
-        EnglishText.setText(list_of_wordsEnglish[0]);
-        FrenchText.setText(list_of_wordsFrench[0]);
+        translationText.setText(translation);
+        challengeText.setText(challenge);
         // editText.setText(sb);
 
 
@@ -221,18 +214,7 @@ public class WordLearnFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-               i++;
-               if(i<list_of_wordsFrench.length) {
-                   FrenchText.setText(list_of_wordsFrench[i]);
-                   EnglishText.setText(list_of_wordsEnglish[i]);
-               }
-                else {
-                   i = 0;
-                   FrenchText.setText(list_of_wordsFrench[i]);
-                   EnglishText.setText(list_of_wordsEnglish[i]);
-               }
-                String toSpeak = FrenchText.getText().toString();
-                t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+                t1.speak(challenge, TextToSpeech.QUEUE_FLUSH, null);
 
             }
         });
