@@ -1,7 +1,7 @@
 package com.example.lenovo.correctly.fragments;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import com.example.lenovo.correctly.R;
 
 
-public class ThreeFragment extends Fragment {
+public class TotalProgressFragment extends Fragment {
 
-    public ThreeFragment() {
+    public TotalProgressFragment() {
         // Required empty public constructor
     }
 
@@ -24,7 +24,7 @@ public class ThreeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_three, container, false);
+        return inflater.inflate(R.layout.fragment_total_progress, container, false);
     }
 
 }
