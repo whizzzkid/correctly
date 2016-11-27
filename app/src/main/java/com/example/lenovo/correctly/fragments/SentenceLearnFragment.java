@@ -4,23 +4,21 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.security.ProviderInstaller;
-import com.google.protobuf.MessageOrBuilder;
-import com.google.protobuf.TextFormat;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.app.Fragment;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
-import android.app.Fragment;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
@@ -30,24 +28,26 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.lenovo.correctly.MainActivity;
 import com.example.lenovo.correctly.R;
 import com.example.lenovo.correctly.clients.StreamingRecognizeClient;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Locale;
 
 import io.grpc.ManagedChannel;
 
 
 public class SentenceLearnFragment extends Fragment {
-
+    public int MainIterator=0;
+    public String sentence = "this is [part 1] and [here another] and [another one]";
     private final int SPEECH_RECOGNITION_CODE = 1;
     public TextView textView;
     public TextView EnglishText;
     public TextView FrenchText;
+    public TextView mAction;
     // public EditText editText;
     public RatingBar ratingBar;
     String text = "";
@@ -58,17 +58,18 @@ public class SentenceLearnFragment extends Fragment {
     private ImageButton btnPlay;
     private View myFragmentView;
     public int i=0;
-    public String[] list_of_wordsFrench = new String[]{"Bonjour, je m’appelle Sam.",
-            "J’ai douze ans.",
-            "Vol numéro 210",
-            "J’ai une carte de crédit",
-            "Où est l’aéroport?"};
+    public String wordToCheck="";
+    public String[] list_of_wordsFrench = new String[]{"Bonjour voici \n" +
+            "le magasin"};
 
     private static final String HOSTNAME = "speech.googleapis.com";
     private static final int PORT = 443;
     private static final int RECORDER_SAMPLERATE = 16000;
     private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
     private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
+
+    public boolean flag_play=false;
+    public boolean flag_record=false;
 
     private AudioRecord mAudioRecord = null;
     private Thread mRecordingThread = null;
@@ -77,21 +78,20 @@ public class SentenceLearnFragment extends Fragment {
     private TextView mConsoleMsg;
     private StreamingRecognizeClient mStreamingClient;
     private int mBufferSize;
+    public String confidence="";
+    public String transcript="";
+    public String[] listOfWords;
+    public String[] list_of_wordsEnglish=new String[]{"Good morning, here is the store"};
 
-
-    public String[] list_of_wordsEnglish=new String[]{"Hello, my name is Sam.",
-            "I am twelve years old.",
-            "Flight No. 210",
-            "I have a credit card.",
-            "Where is the airport?"};
     public SentenceLearnFragment() {
         // Required empty public constructor
     }
-
+    public int wTC_one=0;
+    public int wTC_two=0;
 
     private void startRecording() {
         mAudioRecord.startRecording();
-        mIsRecording = true;
+
         mRecordingThread = new Thread(new Runnable() {
             public void run() {
                 readData();
@@ -99,6 +99,69 @@ public class SentenceLearnFragment extends Fragment {
         }, "AudioRecorder Thread");
         mRecordingThread.start();
     }
+
+    private SpannableStringBuilder addClickablePart(String str) {
+
+        listOfWords=str.split(" ");
+
+        sb = new SpannableStringBuilder(str);
+        int idx1 =0;
+        int idx2 = 0;
+        for(int i=0;i<listOfWords.length; i++)
+        {
+
+            idx1=str.indexOf(listOfWords[i]);
+            idx2 = str.lastIndexOf(listOfWords[i], idx1) +listOfWords[i].length() ;
+
+            final String clickString = str.substring(idx1, idx2);
+            sb.setSpan(new ClickableSpan() {
+
+                @Override
+                public void onClick(View widget) {
+                    if(!mIsRecording)
+                        t1.speak(clickString, TextToSpeech.QUEUE_FLUSH, null);
+                }
+            }, idx1, idx2, 0);
+
+        }
+
+        return sb;
+    }
+
+
+
+    public void changeColorOfWord()
+    {
+
+        try {
+            String str = FrenchText.getText().toString();
+            int idx1 = wTC_one;
+            int idx2 = wTC_two;
+
+            //SpannableStringBuilder spannable = new SpannableStringBuilder(str);
+            str = str.replace(" ", "");
+            transcript = transcript.replace("\"", "");
+            transcript = transcript.replace(" ", "");
+            float confidenceF = Float.parseFloat(confidence);
+            Toast.makeText(getContext(), "confidence= " + confidenceF + "\ntranscript= " + transcript, Toast.LENGTH_SHORT).show();
+            if (Float.parseFloat(confidence) >= 0.7&&(transcript
+                    .compareToIgnoreCase(wordToCheck)==0))
+                sb.setSpan(new ForegroundColorSpan(Color.parseColor("#008744")), wTC_one, wTC_two, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            else
+                sb.setSpan(new ForegroundColorSpan(Color.parseColor("#d62d20")), wTC_one, wTC_two, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            FrenchText.setText(sb);
+            MainIterator++;
+            after_micClick();
+        }
+        catch (Exception e)
+        {
+            Toast.makeText(getContext(), "wTC_one= " + wTC_one + "\nwTC_two= " + wTC_two, Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+
 
     private void readData() {
         byte sData[] = new byte[mBufferSize];
@@ -116,14 +179,37 @@ public class SentenceLearnFragment extends Fragment {
         }
     }
 
+
     private void initialize() {
         final Handler handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 if (msg != null) {
-                    mConsoleMsg.setText(TextFormat.printToString(
-                            (MessageOrBuilder) msg.obj)+"\n" + mConsoleMsg.getText());
 
+                    String[] help=msg.obj.toString().split("\n");
+                    for(int i=0;i<help.length;i++)
+                    {
+                        if(help[i].contains("transcript:")) {
+                            transcript = help[i].replace("transcript:", "");
+                            mConsoleMsg.setText("\ntranscript: " + transcript
+                                    + mConsoleMsg.getText());
+                        }
+
+                        if(help[i].contains("confidence:"))
+                        {
+                            confidence=help[i].replace("confidence:","");
+                            transcript=help[i-1].replace("transcript:","");
+                            mConsoleMsg.setText("\ntranscript: "+transcript +
+                                    "\nconfidence:"+confidence +
+                                    mConsoleMsg.getText());
+                            mIsRecording = false;
+                            mAudioRecord.stop();
+                            mStreamingClient.finish();
+                            Toast.makeText(getContext(),"confidence= "+confidence+"\ntranscript= " +transcript,Toast.LENGTH_SHORT).show();
+                            changeColorOfWord();
+
+                        }
+                    }
                 }
                 super.handleMessage(msg);
             }
@@ -165,6 +251,7 @@ public class SentenceLearnFragment extends Fragment {
         }).start();
     }
 
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -194,13 +281,16 @@ public class SentenceLearnFragment extends Fragment {
         myFragmentView = inflater.inflate(R.layout.fragment_sentence_learn, container, false);
         EnglishText = (TextView) myFragmentView.findViewById(R.id.TranslationText);
         FrenchText = (TextView) myFragmentView.findViewById(R.id.ChallengeText);
-        mConsoleMsg = (TextView) myFragmentView.findViewById(R.id.mConsoleMsg);
+        mAction = (TextView) myFragmentView.findViewById(R.id.mAction);
 
+        FrenchText.setMovementMethod(LinkMovementMethod.getInstance());
+        FrenchText.setText(addClickablePart(sentence), TextView.BufferType.SPANNABLE);
 // Span to set text color to some RGB value
         final ForegroundColorSpan fcs = new ForegroundColorSpan(Color.rgb(158, 158, 158));
 
         EnglishText.setText(list_of_wordsEnglish[0]);
         FrenchText.setText(list_of_wordsFrench[0]);
+        FrenchText.setText(addClickablePart(list_of_wordsFrench[0]));
         // editText.setText(sb);
 
 
@@ -221,7 +311,9 @@ public class SentenceLearnFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-                i++;
+               /* i++;
+                MainIterator=0;
+
                 if(i<list_of_wordsFrench.length) {
                     FrenchText.setText(list_of_wordsFrench[i]);
                     EnglishText.setText(list_of_wordsEnglish[i]);
@@ -230,9 +322,13 @@ public class SentenceLearnFragment extends Fragment {
                     i = 0;
                     FrenchText.setText(list_of_wordsFrench[i]);
                     EnglishText.setText(list_of_wordsEnglish[i]);
-                }
+                }*/
+
                 String toSpeak = FrenchText.getText().toString();
-                t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+                if(!mIsRecording)
+                    t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+                SpannableStringBuilder ssb=addClickablePart(FrenchText.getText().toString());
+                FrenchText.setText(ssb);
 
             }
         });
@@ -249,21 +345,20 @@ public class SentenceLearnFragment extends Fragment {
         initialize();
 
         mRecordingBt = (ImageButton) myFragmentView.findViewById(R.id.btn_mic);
-        // mConsoleMsg = (TextView) view.findViewById(R.id.textView);
+        mConsoleMsg = (TextView) myFragmentView.findViewById(R.id.mConsoleMsg);
         mRecordingBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mIsRecording) {
-                    mIsRecording = false;
-                    mAudioRecord.stop();
-                    mStreamingClient.finish();
-                    //mRecordingBt.setText(R.string.start_recording);
-                } else {
-                    if (mAudioRecord.getState() == AudioRecord.STATE_INITIALIZED) {
-                        // mRecordingBt.setText(R.string.stop_recording);
-                        startRecording();
+                if (!t1.isSpeaking()) {
+
+                    if (mIsRecording) {
+                        mIsRecording = false;
+                        mAudioRecord.stop();
+                        mStreamingClient.finish();
+
                     } else {
-                        Log.i(this.getClass().getSimpleName(), "Not Initialized yet.");
+                        MainIterator = 0;
+                        after_micClick();
                     }
                 }
             }
@@ -275,60 +370,36 @@ public class SentenceLearnFragment extends Fragment {
     }
 
 
+    public void after_micClick() {
+        mIsRecording = true;
+        if (mAudioRecord.getState() == AudioRecord.STATE_INITIALIZED) {
+            // mRecordingBt.setText(R.string.stop_recording);
 
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-        switch (requestCode) {
-            case SPEECH_RECOGNITION_CODE: {
-                if (resultCode == Activity.RESULT_OK && null != data) {
+            if (MainIterator < listOfWords.length) {
 
-                    ArrayList<String> result = data
-                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    float[] confidence = data.getFloatArrayExtra
-                            (RecognizerIntent.EXTRA_CONFIDENCE_SCORES);
-                    String resText = result.get(0);
-                    String st = "";
+                String str = FrenchText.getText().toString();
+                int idx1 = 0;
+                int idx2 = 0;
 
-                    resText.toLowerCase();
-                    text.toLowerCase();
-                    //Toast.makeText(this,text+"\n"+resText,Toast.LENGTH_LONG).show();
-// Span to set text color to some RGB value
-                    final ForegroundColorSpan red = new ForegroundColorSpan(Color.RED);
-                    final ForegroundColorSpan green = new ForegroundColorSpan(Color.GREEN);
-
-// Span to make text bold
-                    final StyleSpan bss = new StyleSpan(android.graphics.Typeface.BOLD);
-                    for (int i = 0; i < result.size(); i++)
-                        st += text + "\n" + confidence[i] + "\n" + result.get(i) + "\n";
-                    int startPoint = 0;
-                    String[] resultText = resText.split(" ");
-                    String[] initialText = text.split(" ");
-
-                    for (int i = 0; i < initialText.length; i++) {
-                        if (initialText[i].toString().compareTo(initialText[i].toString()) == 0) {
-                            sb.setSpan(red, startPoint, startPoint + initialText[i].length(),
-                                    Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-
-
-                        } else {
-                            sb.setSpan(green, startPoint, startPoint + initialText[i].length(),
-                                    Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-
-
-                        }
-                        startPoint += initialText[i].length() + 1;
-                    }
-
-
-                }
-                break;
+                wTC_one = str.indexOf(listOfWords[MainIterator]);
+                wTC_two = str.lastIndexOf(listOfWords[MainIterator], wTC_one) + listOfWords[MainIterator].length();
+                wordToCheck = listOfWords[MainIterator];
+                wordToCheck=wordToCheck.replace(" ","");
+                wordToCheck=wordToCheck.replace(" ","");
+                sb.setSpan(new StyleSpan(Typeface.BOLD),wTC_one, wTC_two, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                FrenchText.setText(sb);
+                startRecording();
             }
-
+            else
+                mIsRecording=false;
+        } else {
+            Log.i(this.getClass().getSimpleName(), "Not Initialized yet.");
         }
     }
+
+
 
 
 }

@@ -4,11 +4,8 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.security.ProviderInstaller;
-import com.google.protobuf.MessageOrBuilder;
-import com.google.protobuf.TextFormat;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.app.Fragment;
 import android.graphics.Color;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -16,13 +13,11 @@ import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
-import android.app.Fragment;
 import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,13 +25,13 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.lenovo.correctly.MainActivity;
 import com.example.lenovo.correctly.R;
 import com.example.lenovo.correctly.clients.StreamingRecognizeClient;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Locale;
 
 import io.grpc.ManagedChannel;
@@ -45,21 +40,21 @@ import io.grpc.ManagedChannel;
 public class WordLearnFragment extends Fragment {
 
     private final int SPEECH_RECOGNITION_CODE = 1;
-    private String challenge;
-    private String translation;
     public TextView textView;
-    public TextView translationText;
-    public TextView challengeText;
-   // public EditText editText;
+    public TextView EnglishText;
+    public TextView FrenchText;
+    // public EditText editText;
     public RatingBar ratingBar;
     String text = "";
     TextToSpeech t1;
     private SpannableStringBuilder sb;
     private TextView txtOutput;
+    public TextView mAction;
     private ImageButton btnMicrophone;
     private ImageButton btnPlay;
     private View myFragmentView;
     public int i=0;
+    public String[] list_of_wordsFrench = new String[]{"Bonjour", "Magasin"};
 
     private static final String HOSTNAME = "speech.googleapis.com";
     private static final int PORT = 443;
@@ -75,6 +70,9 @@ public class WordLearnFragment extends Fragment {
     private StreamingRecognizeClient mStreamingClient;
     private int mBufferSize;
 
+    public String confidence="";
+    public String transcript="";
+    public String[] list_of_wordsEnglish=new String[]{"Good morning" ,"Store"};
     public WordLearnFragment() {
         // Required empty public constructor
     }
@@ -90,7 +88,38 @@ public class WordLearnFragment extends Fragment {
         }, "AudioRecorder Thread");
         mRecordingThread.start();
     }
-
+    public void changeColorOfWord()
+    {
+        String str=FrenchText.getText().toString();
+        SpannableString spannable = new SpannableString(str);
+        str=str.replace(" ","");
+        transcript=transcript.replace("\"","");
+        transcript=transcript.replace(" ","");
+        float confidenceF=Float.parseFloat(confidence);
+        Toast.makeText(getContext(),"confidence= "+confidenceF+"\ntranscript= " +transcript,Toast.LENGTH_SHORT).show();
+        if(Float.parseFloat(confidence)>=0.7&&(transcript.compareToIgnoreCase(str)==0))
+            spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#008744")), 0, FrenchText.getText().toString().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        else
+            spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#d62d20")), 0, FrenchText.getText().toString().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        FrenchText.setText(spannable);
+        Runnable r = new Runnable() {
+            @Override
+            public void run(){
+                i++;
+                if(i<list_of_wordsFrench.length) {
+                    FrenchText.setText(list_of_wordsFrench[i]);
+                    EnglishText.setText(list_of_wordsEnglish[i]);
+                }
+                else {
+                    i = 0;
+                    FrenchText.setText(list_of_wordsFrench[i]);
+                    EnglishText.setText(list_of_wordsEnglish[i]);
+                }
+            }
+        };
+        Handler h = new Handler();
+        h.postDelayed(r, 3000);
+    }
     private void readData() {
         byte sData[] = new byte[mBufferSize];
         while (mIsRecording) {
@@ -107,13 +136,34 @@ public class WordLearnFragment extends Fragment {
         }
     }
 
+
     private void initialize() {
         final Handler handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 if (msg != null) {
-                    mConsoleMsg.setText(TextFormat.printToString(
-                            (MessageOrBuilder) msg.obj)+"\n" + mConsoleMsg.getText());
+//                    mConsoleMsg.setText(TextFormat.printToString(
+//                          (MessageOrBuilder) msg.obj)+"\n" + mConsoleMsg
+//                            .getText());
+                    mAction.setText("I am Listening!");
+
+                    String[] help=msg.obj.toString().split("\n");
+                    for(int i=0;i<help.length;i++)
+                    {
+
+                        if(help[i].contains("confidence:"))
+                        {
+                            confidence=help[i].replace("confidence:","");
+                            transcript=help[i-1].replace("transcript:","");
+                            mIsRecording = false;
+                            mAudioRecord.stop();
+                            mStreamingClient.finish();
+
+                            changeColorOfWord();
+                        }
+                    }
+
+
 
                 }
                 super.handleMessage(msg);
@@ -174,9 +224,6 @@ public class WordLearnFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle args = getArguments();
-        this.challenge = (String) args.get("challenge");
-        this.translation = (String) args.get("translation");
     }
 
     @Override
@@ -185,15 +232,18 @@ public class WordLearnFragment extends Fragment {
 
 
 
-        myFragmentView = inflater.inflate(R.layout.fragment_word_learn, container, false);
-        translationText = (TextView) myFragmentView.findViewById(R.id.TranslationText);
-        challengeText = (TextView) myFragmentView.findViewById(R.id.ChallengeText);
-        mConsoleMsg = (TextView) myFragmentView.findViewById(R.id.mConsoleMsg);
+        myFragmentView = inflater.inflate(R.layout.fragment_word_learn, container,
+                false);
+        EnglishText = (TextView) myFragmentView.findViewById(R.id.TranslationText);
+        FrenchText = (TextView) myFragmentView.findViewById(R.id.ChallengeText);
+
+        mAction = (TextView) myFragmentView.findViewById
+                (R.id.mAction);
 
         final ForegroundColorSpan fcs = new ForegroundColorSpan(Color.rgb(158, 158, 158));
 
-        translationText.setText(translation);
-        challengeText.setText(challenge);
+        EnglishText.setText(list_of_wordsEnglish[0]);
+        FrenchText.setText(list_of_wordsFrench[0]);
         // editText.setText(sb);
 
 
@@ -214,8 +264,8 @@ public class WordLearnFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-                t1.speak(challenge, TextToSpeech.QUEUE_FLUSH, null);
-
+                String toSpeak = FrenchText.getText().toString();
+                t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
             }
         });
 
@@ -239,10 +289,11 @@ public class WordLearnFragment extends Fragment {
                     mIsRecording = false;
                     mAudioRecord.stop();
                     mStreamingClient.finish();
+                    mAction.setText("I am Not Listening");
                     //mRecordingBt.setText(R.string.start_recording);
                 } else {
                     if (mAudioRecord.getState() == AudioRecord.STATE_INITIALIZED) {
-                       // mRecordingBt.setText(R.string.stop_recording);
+                        // mRecordingBt.setText(R.string.stop_recording);
                         startRecording();
                     } else {
                         Log.i(this.getClass().getSimpleName(), "Not Initialized yet.");
@@ -255,63 +306,4 @@ public class WordLearnFragment extends Fragment {
         // Inflate the layout for this fragment
         return myFragmentView;
     }
-
-
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        switch (requestCode) {
-            case SPEECH_RECOGNITION_CODE: {
-                if (resultCode == Activity.RESULT_OK && null != data) {
-
-                    ArrayList<String> result = data
-                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    float[] confidence = data.getFloatArrayExtra
-                            (RecognizerIntent.EXTRA_CONFIDENCE_SCORES);
-                    String resText = result.get(0);
-                    String st = "";
-
-                    resText.toLowerCase();
-                    text.toLowerCase();
-                    //Toast.makeText(this,text+"\n"+resText,Toast.LENGTH_LONG).show();
-// Span to set text color to some RGB value
-                    final ForegroundColorSpan red = new ForegroundColorSpan(Color.RED);
-                    final ForegroundColorSpan green = new ForegroundColorSpan(Color.GREEN);
-
-// Span to make text bold
-                    final StyleSpan bss = new StyleSpan(android.graphics.Typeface.BOLD);
-                    for (int i = 0; i < result.size(); i++)
-                        st += text + "\n" + confidence[i] + "\n" + result.get(i) + "\n";
-                    int startPoint = 0;
-                    String[] resultText = resText.split(" ");
-                    String[] initialText = text.split(" ");
-
-                    for (int i = 0; i < initialText.length; i++) {
-                        if (initialText[i].toString().compareTo(initialText[i].toString()) == 0) {
-                            sb.setSpan(red, startPoint, startPoint + initialText[i].length(),
-                                    Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-
-
-                        } else {
-                            sb.setSpan(green, startPoint, startPoint + initialText[i].length(),
-                                    Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-
-
-                        }
-                        startPoint += initialText[i].length() + 1;
-                    }
-
-
-
-                }
-                break;
-            }
-
-        }
-    }
-
-
 }
