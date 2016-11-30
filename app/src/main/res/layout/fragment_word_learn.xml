@@ -73,7 +73,7 @@
             android:layout_centerHorizontal="true" />
 
 
-        <ScrollView android:id="@+id/textAreaScroller"
+        <!--<ScrollView android:id="@+id/textAreaScroller"
             android:layout_width="fill_parent"
             android:layout_height="600px"
             android:layout_x="0px"
@@ -89,7 +89,17 @@
                 android:layout_marginTop="22dp"
                 
                 android:text="dsds" />
-        </ScrollView>
+        </ScrollView> -->
+
+        <TextView
+                android:id="@+id/mAction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/fbedittext"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/fbedittext"
+                android:layout_marginTop="22dp"
+                />
 
     </LinearLayout>
 
