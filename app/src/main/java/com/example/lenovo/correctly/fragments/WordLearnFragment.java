@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -236,6 +237,11 @@ public class WordLearnFragment extends Fragment {
                 false);
         EnglishText = (TextView) myFragmentView.findViewById(R.id.TranslationText);
         FrenchText = (TextView) myFragmentView.findViewById(R.id.ChallengeText);
+
+        FrenchText.setAnimation(AnimationUtils.loadAnimation(getContext(),
+                R.anim.zoom_in));
+        EnglishText.setAnimation(AnimationUtils.loadAnimation(getContext(),
+                R.anim.move));
 
         mAction = (TextView) myFragmentView.findViewById
                 (R.id.mAction);
