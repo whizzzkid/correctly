@@ -14,6 +14,7 @@
 
         android:left="15dp"
         android:right="15dp"
+
          />
 
     <!-- we define corner radius, note that radius can be different for each corner -->
