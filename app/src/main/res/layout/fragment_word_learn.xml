@@ -1,17 +1,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:context="com.example.lenovo.correctly.fragments.WordLearnFragment"
         >
 
-    <ProgressBar
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/progressBar"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true" />
+
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -19,17 +14,16 @@
         android:gravity="center"
         android:orientation="vertical"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginTop="50dp"
         android:layout_marginRight="10dp"
-
+        android:id="@+id/liner_layout_one"
         android:weightSum="1"
         android:background="@drawable/shape_words">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName"
+
             android:text='1'
             android:textSize="32sp"
             android:ems="30"
@@ -102,5 +96,112 @@
                 />
 
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="43dp"
+        android:weightSum="1"
+        android:background="@drawable/shape_sentences"
+        android:layout_below="@+id/liner_layout_one"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="43dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:text='New words:'
+            android:textSize="20sp"
+            android:ems="30"
+            android:id="@+id/progress_Of_New_Words"
+            android:layout_above="@+id/btn_play"
+            android:layout_alignParentStart="true"
+            android:gravity="center"
+            />
+
+        <ProgressBar
+            style="@style/CustomProgressBarGreen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBar_New_Words"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text='Learning words:'
+            android:textSize="20sp"
+            android:gravity="center"
+            android:ems="30"
+            android:id="@+id/progress_Of_Learning_Words"
+            android:layout_centerVertical="true"
+            />
+
+        <ProgressBar
+            style="@style/CustomProgressBarYellow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBar_Learning_Words"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text='Mastered words:'
+            android:textSize="20sp"
+            android:gravity="center"
+            android:ems="30"
+            android:id="@+id/progress_Of_Mastered_Words"
+            android:layout_centerVertical="true"
+            />
+
+        <ProgressBar
+            style="@style/CustomProgressBarBlue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBar_Of_Mastered_Words"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true" />
+
+
+        <!--<ScrollView android:id="@+id/textAreaScroller"
+            android:layout_width="fill_parent"
+            android:layout_height="600px"
+            android:layout_x="0px"
+            android:layout_y="100px"
+            android:scrollbars="vertical">
+            <TextView
+                android:id="@+id/mConsoleMsg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/fbedittext"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/fbedittext"
+                android:layout_marginTop="22dp"
+
+                android:text="dsds" />
+        </ScrollView> -->
+
+
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:srcCompat="@drawable/launcher"
+        android:id="@+id/correctImage"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="28dp" />
 
 </RelativeLayout>
