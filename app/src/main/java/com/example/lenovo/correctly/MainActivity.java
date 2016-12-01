@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.example.lenovo.correctly.fragments.TopicsFragment;
+import com.example.lenovo.correctly.fragments.WordLearnFragment;
 import com.example.lenovo.correctly.utils.FragmentLoader;
 
 import static android.content.ContentValues.TAG;
@@ -112,6 +113,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView
         int id = item.getItemId();
 
         if (id == R.id.nav_words) {
+
+
 
         } else if (id == R.id.nav_sentences) {
 
