@@ -22,7 +22,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,8 +41,13 @@ import java.util.Locale;
 import io.grpc.ManagedChannel;
 
 
+
 public class WordLearnFragment extends Fragment {
 
+    public ProgressBar progressBarLearning;
+    public ProgressBar progressBarNew;
+    public ProgressBar progressBarMastered;
+    public ImageView correctImage;
     private final int SPEECH_RECOGNITION_CODE = 1;
     public TextView textView;
     public TextView EnglishText;
@@ -81,6 +90,7 @@ public class WordLearnFragment extends Fragment {
     private void startRecording() {
         mAudioRecord.startRecording();
         mIsRecording = true;
+        mAction.setText("I am Listening!");
         mRecordingThread = new Thread(new Runnable() {
             public void run() {
                 readData();
@@ -90,6 +100,7 @@ public class WordLearnFragment extends Fragment {
     }
     public void changeColorOfWord()
     {
+
         String str=FrenchText.getText().toString();
         SpannableString spannable = new SpannableString(str);
         str=str.replace(" ","");
@@ -97,10 +108,22 @@ public class WordLearnFragment extends Fragment {
         transcript=transcript.replace(" ","");
         float confidenceF=Float.parseFloat(confidence);
         Toast.makeText(getContext(),"confidence= "+confidenceF+"\ntranscript= " +transcript,Toast.LENGTH_SHORT).show();
-        if(Float.parseFloat(confidence)>=0.7&&(transcript.compareToIgnoreCase(str)==0))
-            spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#008744")), 0, FrenchText.getText().toString().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        else
-            spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#d62d20")), 0, FrenchText.getText().toString().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        if(Float.parseFloat(confidence)>=0.7&&(transcript.compareToIgnoreCase(str)==0)) {
+            spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#008744")), 0,
+                    FrenchText.getText().toString().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            correctImage.setImageResource(R.mipmap.launcher);
+            correctImage.setAnimation(AnimationUtils.loadAnimation(getContext(),
+                    R.anim.zoom_in));
+
+
+        }
+        else {
+            spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#d62d20")), 0,
+                    FrenchText.getText().toString().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            correctImage.setImageResource(R.mipmap.incorrect);
+            correctImage.setAnimation(AnimationUtils.loadAnimation(getContext(),
+                    R.anim.zoom_in));
+        }
         FrenchText.setText(spannable);
         Runnable r = new Runnable() {
             @Override
@@ -115,11 +138,24 @@ public class WordLearnFragment extends Fragment {
                     FrenchText.setText(list_of_wordsFrench[i]);
                     EnglishText.setText(list_of_wordsEnglish[i]);
                 }
+                correctImage.setImageResource(R.drawable.transparent);
+                //correctImage.setVisibility(View.INVISIBLE);
+
+
+
             }
         };
         Handler h = new Handler();
         h.postDelayed(r, 3000);
+        FrenchText.setAnimation(AnimationUtils.loadAnimation(getContext(),
+                R.anim.zoom_in));
+        FrenchText.animate().start();
+        EnglishText.setAnimation(AnimationUtils.loadAnimation(getContext(),
+                R.anim.zoom_in));
+        EnglishText.animate().start();
+
     }
+
     private void readData() {
         byte sData[] = new byte[mBufferSize];
         while (mIsRecording) {
@@ -145,7 +181,7 @@ public class WordLearnFragment extends Fragment {
 //                    mConsoleMsg.setText(TextFormat.printToString(
 //                          (MessageOrBuilder) msg.obj)+"\n" + mConsoleMsg
 //                            .getText());
-                    mAction.setText("I am Listening!");
+
 
                     String[] help=msg.obj.toString().split("\n");
                     for(int i=0;i<help.length;i++)
@@ -234,8 +270,32 @@ public class WordLearnFragment extends Fragment {
 
         myFragmentView = inflater.inflate(R.layout.fragment_word_learn, container,
                 false);
+        correctImage= (ImageView) myFragmentView.findViewById(R.id.correctImage);
+        correctImage.setVisibility(View.INVISIBLE);
+        progressBarLearning=(ProgressBar) myFragmentView.findViewById(R.id.progressBar_Learning_Words);
+        progressBarNew=(ProgressBar) myFragmentView.findViewById(R.id.progressBar_New_Words);
+        progressBarMastered=(ProgressBar) myFragmentView.findViewById(R.id.progressBar_Of_Mastered_Words);
+        progressBarNew.setProgress(100);
+
+
+        progressBarLearning.setProgress(50);
+
+        progressBarMastered.setProgress(50);
+
+
+
+
+
+
+
         EnglishText = (TextView) myFragmentView.findViewById(R.id.TranslationText);
         FrenchText = (TextView) myFragmentView.findViewById(R.id.ChallengeText);
+
+        FrenchText.setAnimation(AnimationUtils.loadAnimation(getContext(),
+                R.anim.zoom_in));
+        EnglishText.setAnimation(AnimationUtils.loadAnimation(getContext(),
+                R.anim.zoom_in));
+
 
         mAction = (TextView) myFragmentView.findViewById
                 (R.id.mAction);
@@ -264,8 +324,10 @@ public class WordLearnFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-                String toSpeak = FrenchText.getText().toString();
-                t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+                if(!mIsRecording) {
+                    String toSpeak = FrenchText.getText().toString();
+                    t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+                }
             }
         });
 
