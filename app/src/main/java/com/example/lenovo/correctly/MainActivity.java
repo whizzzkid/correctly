@@ -1,6 +1,7 @@
 package com.example.lenovo.correctly;
 
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -121,11 +122,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
-
+            shareProgress();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+    private void shareProgress() {
+        String shareBody = "My progress:";
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+        startActivity(Intent.createChooser(sharingIntent, "Progress"));
+
+
+
+        /*final String shareTitle = "Progress";
+        final Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND_MULTIPLE);
+        intent.setType
+       // final ArrayList<Uri> uris = new ArrayList<>(media.size());
+       /* for (Medium medium : media) {
+            final File file = new File(medium.getPath());
+            uris.add(Uri.fromFile(file));
+        }
+
+       intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+        startActivity(Intent.createChooser(intent, shareTitle));*/
+    }
+
 }
