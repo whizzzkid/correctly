@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -139,6 +140,7 @@ public class WordLearnFragment extends Fragment {
                     EnglishText.setText(list_of_wordsEnglish[i]);
                 }
                 correctImage.setImageResource(R.drawable.transparent);
+
                 //correctImage.setVisibility(View.INVISIBLE);
 
 
@@ -194,6 +196,7 @@ public class WordLearnFragment extends Fragment {
                             mIsRecording = false;
                             mAudioRecord.stop();
                             mStreamingClient.finish();
+                            mRecordingBt.clearAnimation();
 
                             changeColorOfWord();
                         }
@@ -312,19 +315,25 @@ public class WordLearnFragment extends Fragment {
         t1 = new TextToSpeech(getContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
-                if (status != TextToSpeech.ERROR) {
-                    //
-                    t1.setLanguage(Locale.FRENCH);
+                t1.setLanguage(Locale.FRENCH);
+               // t1.setOnUtteranceProgressListener(mProgressListener);
 
                 }
-            }
+
+
         });
+
+
+
         btnPlay = (ImageButton) myFragmentView.findViewById(R.id.btn_play);
         btnPlay.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 if(!mIsRecording) {
+                    Animation pulse = AnimationUtils.loadAnimation(getContext(), R.anim.pulse);
+                   // btnPlay.startAnimation(pulse);
+
                     String toSpeak = FrenchText.getText().toString();
                     t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
                 }
@@ -348,6 +357,7 @@ public class WordLearnFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (mIsRecording) {
+                    mRecordingBt.clearAnimation();
                     mIsRecording = false;
                     mAudioRecord.stop();
                     mStreamingClient.finish();
@@ -356,6 +366,8 @@ public class WordLearnFragment extends Fragment {
                 } else {
                     if (mAudioRecord.getState() == AudioRecord.STATE_INITIALIZED) {
                         // mRecordingBt.setText(R.string.stop_recording);
+                        Animation pulse = AnimationUtils.loadAnimation(getContext(), R.anim.pulse);
+                        mRecordingBt.startAnimation(pulse);
                         startRecording();
                     } else {
                         Log.i(this.getClass().getSimpleName(), "Not Initialized yet.");
@@ -368,4 +380,19 @@ public class WordLearnFragment extends Fragment {
         // Inflate the layout for this fragment
         return myFragmentView;
     }
+    private UtteranceProgressListener mProgressListener = new UtteranceProgressListener() {
+        @Override
+        public void onStart(String utteranceId) {
+        } // Do nothing
+
+        @Override
+        public void onError(String utteranceId) {
+        } // Do nothing.
+
+        @Override
+        public void onDone(String utteranceId) {
+            btnPlay.clearAnimation();
+            Toast.makeText(getContext(),"ssa",Toast.LENGTH_SHORT).show();
+        }
+    };
 }
