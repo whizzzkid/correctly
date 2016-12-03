@@ -8,10 +8,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.ToolbarWidgetWrapper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.lenovo.correctly.R;
 import com.example.lenovo.correctly.adapter.CardAdapter;
@@ -35,6 +37,7 @@ public class TopicsFragment extends Fragment implements CardAdapter.Listener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
+
 
     @Override
     public void onItemClicked(Topic topic) {
