@@ -16,19 +16,142 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.example.lenovo.correctly.fragments.TopicsFragment;
-import com.example.lenovo.correctly.fragments.WordLearnFragment;
+import com.example.lenovo.correctly.models.Challenge;
+import com.example.lenovo.correctly.models.Level;
+import com.example.lenovo.correctly.models.Topic;
 import com.example.lenovo.correctly.utils.FragmentLoader;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 import static android.content.ContentValues.TAG;
 
 public class MainActivity extends AppCompatActivity implements NavigationView
         .OnNavigationItemSelectedListener {
 
+    public Challenge createChallenge(Realm realm, int order, String
+            challenge,
+                                     String
+                                             translation) {
+        Challenge c = realm.createObject(Challenge.class);
+        c.setOrder(order);
+        c.setChallenge(challenge, translation);
+        return c;
+    }
+
+    public Level createLevel(Realm realm, int order, String name, String img,
+                             Topic parent) {
+        Level l = realm.createObject(Level.class);
+        l.setOrder(order);
+        l.setLevelName(name);
+        l.setLevelImg(img);
+        l.setParent(parent);
+        return l;
+    }
+
+    public Topic createTopic(Realm realm, int order, String name, String img) {
+        Topic t = realm.createObject(Topic.class);
+        t.setTopicName(name);
+        t.setTopicImg(img);
+        t.setOrder(order);
+        return t;
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
+        Realm.init(this);
         Log.v(TAG, "Populating DB");
-        //TODO [whizzzkid]: Populate DB Here.
+        Realm db = Realm.getDefaultInstance();
+        db.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                RealmResults<Topic> results = realm.where(Topic.class).findAll();
+                if (results.size() == 0) {
+                    // Adding Topic.
+                    Topic travel = createTopic(realm, 0, "Travel",
+                            "images/travel.jpg");
+                    Topic school = createTopic(realm, 1, "School",
+                            "images/school.jpg");
+                    Topic city = createTopic(realm, 2, "City",
+                            "images/city.jpg");
+                    Topic family = createTopic(realm, 1, "Family",
+                            "images/family.jpg");
+
+                    // Adding Travel Levels.
+                    Level travel_level0 = createLevel(realm, 0, "Basic Words",
+                            "images/travel_words.jpg", travel);
+
+
+                    Level travel_level1 = createLevel(realm, 1, "Sentences",
+                            "images/travel_sentences.jpg", travel);
+
+                    // Adding School Levels.
+                    Level school_level0 = createLevel(realm, 0, "Basic Words",
+                            "images/school_words.jpg", school);
+                    Level school_level1 = createLevel(realm, 0, "Sentences",
+                            "images/school_sentences.jpg", school);
+
+                    // Adding Travel Challenges.
+                    travel_level0.challenges.add(
+                            createChallenge(
+                                    realm, 0, "Bonjour", "Good Morning"));
+                    travel_level0.challenges.add(
+                            createChallenge(
+                                    realm, 1, "Magasin", "Store"));
+                    travel_level1.challenges.add(
+                            createChallenge(
+                                    realm, 0, "Bonjour Voici le Magasin",
+                                    "Good Morning This is The Store"
+                            )
+                    );
+
+                    // Adding School Challenges.
+                    school_level0.challenges.add(
+                            createChallenge(realm, 0, "Garçon", "Boy"));
+                    school_level0.challenges.add(
+                            createChallenge(realm, 1, "Fille", "Boy"));
+                    school_level0.challenges.add(
+                            createChallenge(realm, 2, "Aimer", "Like"));
+                    school_level0.challenges.add(
+                            createChallenge(realm, 3, "Chanter", "Sing"));
+                    school_level0.challenges.add(
+                            createChallenge(realm, 4, "Chanson", "Song"));
+                    school_level0.challenges.add(
+                            createChallenge(realm, 5, "Cuisiner", "Cook"));
+                    school_level0.challenges.add(
+                            createChallenge(realm, 6, "Nous", "We"));
+                    school_level0.challenges.add(
+                            createChallenge(realm, 7, "Vous", "You"));
+                    school_level0.challenges.add(
+                            createChallenge(realm, 8, "Rouge", "Red"));
+                    school_level0.challenges.add(
+                            createChallenge(realm, 9, "Blanche", "White"));
+                    school_level1.challenges.add(
+                            createChallenge(realm, 0, "Mon crayon est rouge",
+                                    "My Pencil Is Red"));
+                    school_level1.challenges.add(
+                            createChallenge(realm, 1, "Le garçon aime faire " +
+                                    "de la natation", "The Boy Likes To Swim"));
+                    school_level1.challenges.add(
+                            createChallenge(realm, 2, "Nous chantons des " +
+                                    "chansons", "We Sing Songs"));
+                    school_level1.challenges.add(
+                            createChallenge(realm, 3, "Elle aime cuisiner",
+                                    "She Likes To Cook"));
+                    school_level1.challenges.add(
+                            createChallenge(realm, 0, "Ma gomme est blanche",
+                                    "My Eraser Is White"));
+
+                    // Addding everything back.
+                    travel.levels.add(travel_level0);
+                    travel.levels.add(travel_level1);
+                    school.levels.add(school_level0);
+                    school.levels.add(school_level1);
+
+                }
+            }
+        });
     }
 
     @Override
@@ -114,8 +237,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView
         int id = item.getItemId();
 
         if (id == R.id.nav_words) {
-
-
 
         } else if (id == R.id.nav_sentences) {
 

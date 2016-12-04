@@ -1,8 +1,5 @@
 package com.example.lenovo.correctly.fragments;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
 import android.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,19 +12,23 @@ import android.view.ViewGroup;
 
 import com.example.lenovo.correctly.R;
 import com.example.lenovo.correctly.adapter.CardAdapter;
-import com.example.lenovo.correctly.entity.Topic;
+import com.example.lenovo.correctly.entity.CardItem;
+import com.example.lenovo.correctly.models.Level;
+import com.example.lenovo.correctly.models.Topic;
 import com.example.lenovo.correctly.utils.BitmapUtils;
-import com.example.lenovo.correctly.utils.FileReader;
 import com.example.lenovo.correctly.utils.FragmentLoader;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 
 public class LevelsFragment extends Fragment implements CardAdapter.Listener {
 
-    private String topic;
     CardAdapter mAdapter;
+    private String topic;
 
     public LevelsFragment() {
     }
@@ -56,21 +57,21 @@ public class LevelsFragment extends Fragment implements CardAdapter.Listener {
         mAdapter = new CardAdapter(null, this);
         mRecyclerView.setAdapter(mAdapter);
 
-        new LoadLevelsTask().execute();
+        new LoadLevelsTask(topic).execute();
         return view;
     }
 
     @Override
-    public void onItemClicked(Topic topic) {
-        Log.v("test", topic.name);
+    public void onItemClicked(CardItem level) {
+        Log.v("test", level.name);
         Bundle args = new Bundle();
-        if (topic.name.equals("Basic Words")) {
+        if (level.name.equals("Basic Words")) {
             args.putString("challenge", "Bonjour");
             args.putString("translation", "Good Morning");
             new FragmentLoader(getFragmentManager(), args,
                     new WordLearnFragment()).Load();
         }
-        if (topic.name.equals("Sentences")) {
+        if (level.name.equals("Sentences")) {
             args.putString("challenge", "Bonjour, voici le magasin.");
             args.putString("translation", "Good morning, here is the store.");
             new FragmentLoader(getFragmentManager(), args,
@@ -78,32 +79,35 @@ public class LevelsFragment extends Fragment implements CardAdapter.Listener {
         }
     }
 
-    class LoadLevelsTask extends AsyncTask<Void, Void, List<Topic>> {
+    class LoadLevelsTask extends AsyncTask<Void, Void, List<CardItem>> {
+        String topic_name;
 
+        LoadLevelsTask(String topic_name) {
+            super();
+            this.topic_name = topic_name;
+        }
         @Override
-        protected List<Topic> doInBackground(Void... params) {
-            try {
-                Gson gson = new Gson();
-                List<Topic> levels = gson.fromJson(
-                        FileReader.getStringFromFile(
-                                getContext().getAssets(), "levels.json"),
-                        new TypeToken<List<Topic>>() {}.getType());
-
-                for (Topic level : levels) {
-                    level.imageBitmap = BitmapUtils.getBitmapFromAsset(
-                            getContext().getAssets(), level.image);
-                }
-
-                return levels;
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
+        protected List<CardItem> doInBackground(Void... params) {
+            List<CardItem> items = new ArrayList<>();
+            Realm realm = Realm.getDefaultInstance();
+            Topic level_topic = realm.where(Topic.class).equalTo("topic_name",
+                    topic_name).findFirst();
+            RealmResults<Level> levels = level_topic.getAllLevels();
+            for (int i = 0; i < levels.size(); i++) {
+                Level level = levels.get(i);
+                CardItem item = new CardItem();
+                item.name = level.getLevelName();
+                item.image = level.getLevelImg();
+                item.imageBitmap = BitmapUtils.getBitmapFromAsset(
+                        getContext().getAssets(), item.image);
+                items.add(item);
             }
+            return items;
         }
 
         @Override
-        protected void onPostExecute(List<Topic> levels) {
-            ((CardAdapter) mAdapter).getItems().addAll(levels);
+        protected void onPostExecute(List<CardItem> levels) {
+            mAdapter.getItems().addAll(levels);
             mAdapter.notifyDataSetChanged();
         }
     }
