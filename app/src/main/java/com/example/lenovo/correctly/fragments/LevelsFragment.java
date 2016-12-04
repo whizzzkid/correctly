@@ -1,6 +1,8 @@
 package com.example.lenovo.correctly.fragments;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -68,14 +70,35 @@ public class LevelsFragment extends Fragment implements CardAdapter.Listener {
         if (level.name.equals("Basic Words")) {
             args.putString("challenge", "Bonjour");
             args.putString("translation", "Good Morning");
-            new FragmentLoader(getFragmentManager(), args,
-                    new WordLearnFragment()).Load();
+            /*new FragmentLoader(getFragmentManager(), args,
+                    new WordLearnFragment()).Load();*/
+
+            FragmentManager fragmentManager= getFragmentManager();
+            FragmentTransaction ft=fragmentManager.beginTransaction();
+            Fragment wordsFragment=new WordLearnFragment();
+            wordsFragment.setArguments(args);
+            ft.setCustomAnimations(R.animator.slide_in_left,
+                    R.animator.slide_out_right, R.animator.slide_in_left,R.animator.slide_out_right);
+            ft.replace(R.id.fragment_container,wordsFragment,"tw")
+                    .addToBackStack("tw").commit();
+
+
+
+
         }
         if (level.name.equals("Sentences")) {
             args.putString("challenge", "Bonjour, voici le magasin.");
             args.putString("translation", "Good morning, here is the store.");
-            new FragmentLoader(getFragmentManager(), args,
-                    new SentenceLearnFragment()).Load();
+           /* new FragmentLoader(getFragmentManager(), args,
+                    new SentenceLearnFragment()).Load();*/
+            FragmentManager fragmentManager= getFragmentManager();
+            FragmentTransaction ft=fragmentManager.beginTransaction();
+            Fragment sentencesFragment=new SentenceLearnFragment();
+            sentencesFragment.setArguments(args);
+            ft.setCustomAnimations(R.animator.slide_in_left,
+                    R.animator.slide_out_right, R.animator.slide_in_left,R.animator.slide_out_right);
+            ft.replace(R.id.fragment_container,sentencesFragment,"ts")
+                    .addToBackStack("ts").commit();
         }
     }
 
