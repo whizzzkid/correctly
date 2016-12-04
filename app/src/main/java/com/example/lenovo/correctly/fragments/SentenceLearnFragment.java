@@ -34,6 +34,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import static android.content.ContentValues.TAG;
+
 import com.example.lenovo.correctly.MainActivity;
 import com.example.lenovo.correctly.R;
 import com.example.lenovo.correctly.clients.StreamingRecognizeClient;
@@ -46,7 +48,8 @@ import io.grpc.ManagedChannel;
 
 public class SentenceLearnFragment extends Fragment {
     public int MainIterator=0;
-    public String sentence = "this is [part 1] and [here another] and [another one]";
+    public String sentence = "";
+    public String[] MainSentence;
     private final int SPEECH_RECOGNITION_CODE = 1;
     public TextView textView;
     public TextView EnglishText;
@@ -67,7 +70,7 @@ public class SentenceLearnFragment extends Fragment {
     private View myFragmentView;
     public int i=0;
     public String wordToCheck="";
-    public String[] list_of_wordsFrench = new String[]{"Elle aime cuisiner"};
+    public String[] list_of_wordsFrench = new String[]{"Bonjour voici le$magasin"};
 
     private static final String HOSTNAME = "speech.googleapis.com";
     private static final int PORT = 443;
@@ -114,9 +117,14 @@ public class SentenceLearnFragment extends Fragment {
 
     private SpannableStringBuilder addClickablePart(String str) {
 
+        str=str.replace("$"," ");
         listOfWords=str.split(" ");
+        MainSentence=sentence.split(" ");
 
-        sb = new SpannableStringBuilder(str);
+
+
+
+        sb = new SpannableStringBuilder(str.replace("$"," "));
         int idx1 =0;
         int idx2 = 0;
         for(int i=0;i<listOfWords.length; i++)
@@ -153,14 +161,22 @@ public class SentenceLearnFragment extends Fragment {
             //SpannableStringBuilder spannable = new SpannableStringBuilder(str);
             str = str.replace(" ", "");
             transcript = transcript.replace("\"", "");
-            transcript = transcript.replace(" ", "");
+            //transcript = transcript.replaceFirst(" ", "");
+            //transcript.replace("\\s","$");
+            Log.wtf(TAG,"transcript="+"!"+wordToCheck.replace("$"," ")+"!");
+
+
+
             float confidenceF = Float.parseFloat(confidence);
-           // Toast.makeText(getContext(), "confidence= " + confidenceF + "\ntranscript= " + transcript, Toast.LENGTH_SHORT).show();
+
             if (Float.parseFloat(confidence) >= 0.7&&(transcript
-                    .compareToIgnoreCase(wordToCheck)==0))
-                sb.setSpan(new ForegroundColorSpan(Color.parseColor("#008744")), wTC_one, wTC_two, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    .compareToIgnoreCase(wordToCheck.replace("$"," "))==0))
+                sb.setSpan(new ForegroundColorSpan(Color.parseColor("#008744")), wTC_one, wTC_two,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
             else
-                sb.setSpan(new ForegroundColorSpan(Color.parseColor("#d62d20")), wTC_one, wTC_two, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                sb.setSpan(new ForegroundColorSpan(Color.parseColor("#d62d20")), wTC_one, wTC_two,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
             FrenchText.setText(sb);
             MainIterator++;
@@ -168,7 +184,8 @@ public class SentenceLearnFragment extends Fragment {
         }
         catch (Exception e)
         {
-            Toast.makeText(getContext(), "wTC_one= " + wTC_one + "\nwTC_two= " + wTC_two, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "wTC_one= " + wTC_one + "\nwTC_two= " + wTC_two,
+                    Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -199,7 +216,7 @@ public class SentenceLearnFragment extends Fragment {
                 if (msg != null) {
 
                     String[] help=msg.obj.toString().split("\n");
-                    Log.v("1",msg.obj.toString());
+                    Log.w("1",msg.obj.toString());
                     for(int i=0;i<help.length;i++)
                     {
                         /*if(help[i].contains("transcript:")) {
@@ -208,17 +225,26 @@ public class SentenceLearnFragment extends Fragment {
                                     + mConsoleMsg.getText());
                         }*/
 
-                        if(help[i].contains("confidence:"))
+                        if(help[i].contains("is_final: true"))
                         {
-                            confidence=help[i].replace("confidence:","");
-                            transcript=help[i-1].replace("transcript:","");
+                            if(help[i-2].contains("confidence:"))
+                            {
+                                confidence=help[i-2].replace("confidence:","");
+                                transcript=help[i-3].replaceAll("\\s*transcript:\\s*","");
+                            }
+                            else{
+                                confidence="1";
+                                transcript=help[i-2].replaceAll("\\s*transcript:\\s*","");
+                            }
+                            //confidence=help[i].replace("confidence:","");
+
                             /*mConsoleMsg.setText("\ntranscript: "+transcript +
                                     "\nconfidence:"+confidence +
                                     mConsoleMsg.getText());*/
                             mIsRecording = false;
                             mAudioRecord.stop();
                             mStreamingClient.finish();
-                            //Toast.makeText(getContext(),"confidence= "+confidence+"\ntranscript= " +transcript,Toast.LENGTH_SHORT).show();
+
                             changeColorOfWord();
 
                         }
@@ -315,7 +341,8 @@ public class SentenceLearnFragment extends Fragment {
         final ForegroundColorSpan fcs = new ForegroundColorSpan(Color.rgb(158, 158, 158));
 
         EnglishText.setText(list_of_wordsEnglish[0]);
-        FrenchText.setText(list_of_wordsFrench[0]);
+        sentence=list_of_wordsFrench[0];
+        FrenchText.setText(sentence);
         FrenchText.setText(addClickablePart(list_of_wordsFrench[0]));
         /*FrenchText.setAnimation(AnimationUtils.loadAnimation(getContext(),
                 R.anim.zoom_in));
@@ -417,15 +444,15 @@ public class SentenceLearnFragment extends Fragment {
 
 
 
-            if (MainIterator < listOfWords.length) {
+            if (MainIterator < MainSentence.length) {
 
-                String str = FrenchText.getText().toString();
+                String str = sentence;
                 int idx1 = 0;
                 int idx2 = 0;
 
-                wTC_one = str.indexOf(listOfWords[MainIterator]);
-                wTC_two = str.lastIndexOf(listOfWords[MainIterator], wTC_one) + listOfWords[MainIterator].length();
-                wordToCheck = listOfWords[MainIterator];
+                wTC_one = str.indexOf(MainSentence[MainIterator]);
+                wTC_two = str.lastIndexOf(MainSentence[MainIterator], wTC_one) + MainSentence[MainIterator].length();
+                wordToCheck = MainSentence[MainIterator];
                 wordToCheck=wordToCheck.replace(" ","");
                 wordToCheck=wordToCheck.replace(" ","");
                 sb.setSpan(new StyleSpan(Typeface.BOLD),wTC_one, wTC_two, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
