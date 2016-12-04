@@ -8,7 +8,6 @@
             android:id="@+id/card_view"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-
             android:layout_marginLeft="6dp"
             android:layout_marginRight="6dp"
             android:layout_marginTop="6dp"
@@ -19,10 +18,11 @@
                 android:id="@+id/img_thumbnail"
                 android:layout_width="fill_parent"
                 android:layout_height="200dp"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                android:contentDescription="@string/card_image"/>
 
         <TextView
-                android:id="@+id/tv_movie"
+                android:id="@+id/card_title"
                 android:layout_width="fill_parent"
                 android:layout_height="50dp"
                 android:layout_gravity="bottom"
@@ -31,30 +31,15 @@
                 android:gravity="center_vertical"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
-                android:text="Test"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/font_title"/>
 
         <ProgressBar
-            style="@style/CustomProgressBarBlue"
+                style="@style/CustomProgressBarBlue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:id="@+id/progressBar3"
-
-
-                />
-
-       <!-- <ImageButton
-            android:layout_width="46dp"
-            android:layout_height="49dp"
-            card_view:srcCompat="@drawable/share"
-            android:id="@+id/imageButton"
-            android:layout_gravity="bottom|right"
-            android:elevation="24dp"
-            android:scaleType="centerCrop"
-            android:background="@drawable/cast_abc_scrubber_control_off_mtrl_alpha"
-            android:onClick="onClickShare" />-->
+                android:id="@+id/progress"
+                android:layout_gravity="bottom"/>
 
     </android.support.v7.widget.CardView>
 
