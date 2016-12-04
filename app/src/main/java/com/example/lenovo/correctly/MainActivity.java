@@ -56,8 +56,41 @@ public class MainActivity extends AppCompatActivity implements NavigationView
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+        NavigationView navigationView = (NavigationView) findViewById(
+                R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        // Adding back button if we're in a fragment other than main fragment.
+        getFragmentManager().addOnBackStackChangedListener(new FragmentManager
+                .OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                if (getFragmentManager().getBackStackEntryCount() > 0) {
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    toolbar.setNavigationOnClickListener(new View
+                            .OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            onBackPressed();
+                        }
+                    });
+                } else {
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                }
+            }
+        });
+
         Realm.init(this);
         Log.v(TAG, "Populating DB");
         Realm db = Realm.getDefaultInstance();
@@ -100,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView
                                     realm, 1, "Magasin", "Store"));
                     travel_level1.challenges.add(
                             createChallenge(
-                                    realm, 0, "Bonjour Voici le Magasin",
+                                    realm, 0, "Bonjour Voici le$Magasin",
                                     "Good Morning This is The Store"
                             )
                     );
@@ -130,8 +163,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView
                             createChallenge(realm, 0, "Mon crayon est rouge",
                                     "My Pencil Is Red"));
                     school_level1.challenges.add(
-                            createChallenge(realm, 1, "Le garçon aime faire " +
-                                    "de la natation", "The Boy Likes To Swim"));
+                            createChallenge(realm, 1, "Le$garçon aime faire " +
+                                    "de$la natation", "The Boy Likes To Swim"));
                     school_level1.challenges.add(
                             createChallenge(realm, 2, "Nous chantons des " +
                                     "chansons", "We Sing Songs"));
@@ -139,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView
                             createChallenge(realm, 3, "Elle aime cuisiner",
                                     "She Likes To Cook"));
                     school_level1.challenges.add(
-                            createChallenge(realm, 0, "Ma gomme est blanche",
+                            createChallenge(realm, 0, "Ma$gomme est blanche",
                                     "My Eraser Is White"));
 
                     // Addding everything back.
@@ -151,43 +184,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView
                 }
             }
         });
-    }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-        NavigationView navigationView = (NavigationView) findViewById(
-                R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        // Adding back button if we're in a fragment other than main fragment.
-        getFragmentManager().addOnBackStackChangedListener(new FragmentManager
-                .OnBackStackChangedListener() {
-            @Override
-            public void onBackStackChanged() {
-            if (getFragmentManager().getBackStackEntryCount() > 0) {
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                toolbar.setNavigationOnClickListener(new View
-                        .OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        onBackPressed();
-                    }
-                });
-            } else {
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            }
-            }
-        });
         // Check that the activity is using the layout version with
         // the fragment_container FrameLayout
         if (findViewById(R.id.fragment_container) != null) {
@@ -226,8 +223,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        return id == R.id.action_settings || super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case R.id.action_reset_progress: {
+                Realm realm = Realm.getDefaultInstance();
+                realm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        realm.deleteAll();
+                        Intent intent = getIntent();
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        finish();
+                        overridePendingTransition(0, 0);
+
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+                    }
+                });
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
 
     }
 
@@ -235,45 +250,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
+        switch (item.getItemId()) {
+            case R.id.nav_words: {
+            }
 
-        if (id == R.id.nav_words) {
+            case R.id.nav_sentences: {
+            }
 
-        } else if (id == R.id.nav_sentences) {
+            case R.id.nav_manage: {
+            }
 
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-            shareProgress();
+            case R.id.nav_share: {
+                String shareBody = "My progress:";
+                Intent sharingIntent = new Intent(android.content.Intent
+                        .ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,
+                        "Subject Here");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT,
+                        shareBody);
+                startActivity(Intent.createChooser(sharingIntent, "Progress"));
+            }
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    private void shareProgress() {
-        String shareBody = "My progress:";
-        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-        sharingIntent.setType("text/plain");
-        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject" +
-                " Here");
-        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-        startActivity(Intent.createChooser(sharingIntent, "Progress"));
-
-
-
-        /*final String shareTitle = "Progress";
-        final Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_SEND_MULTIPLE);
-        intent.setType
-       // final ArrayList<Uri> uris = new ArrayList<>(media.size());
-       /* for (Medium medium : media) {
-            final File file = new File(medium.getPath());
-            uris.add(Uri.fromFile(file));
-        }
-
-       intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-        startActivity(Intent.createChooser(intent, shareTitle));*/
-    }
-
 }
