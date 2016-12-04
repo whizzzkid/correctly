@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.lenovo.correctly.R;
-import com.example.lenovo.correctly.entity.Topic;
+import com.example.lenovo.correctly.entity.CardItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,10 +17,10 @@ import java.util.List;
 public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
         implements View.OnClickListener {
 
-    private List<Topic> mItems;
+    private List<CardItem> mItems;
     private Listener mListener;
 
-    public CardAdapter(List<Topic> items, Listener listener) {
+    public CardAdapter(List<CardItem> items, Listener listener) {
         if (items == null) {
             items = new ArrayList<>();
         }
@@ -37,12 +37,12 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
-        Topic topic = mItems.get(i);
-        viewHolder.tvMovie.setText(topic.name);
-        viewHolder.imgThumbnail.setImageBitmap(topic.imageBitmap);
+        CardItem item = mItems.get(i);
+        viewHolder.tvMovie.setText(item.name);
+        viewHolder.imgThumbnail.setImageBitmap(item.imageBitmap);
         if (mListener != null) {
             viewHolder.cardView.setOnClickListener(this);
-            viewHolder.cardView.setTag(topic);
+            viewHolder.cardView.setTag(item);
         }
     }
 
@@ -54,17 +54,17 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
     @Override
     public void onClick(View v) {
         if (v instanceof CardView) {
-            Topic topic = (Topic) v.getTag();
-            mListener.onItemClicked(topic);
+            CardItem item = (CardItem) v.getTag();
+            mListener.onItemClicked(item);
         }
     }
 
-    public List<Topic> getItems() {
+    public List<CardItem> getItems() {
         return mItems;
     }
 
     public interface Listener {
-        void onItemClicked(Topic topic);
+        void onItemClicked(CardItem item);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
