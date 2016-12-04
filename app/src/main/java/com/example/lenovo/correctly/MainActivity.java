@@ -30,9 +30,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView
         .OnNavigationItemSelectedListener {
 
     public Challenge createChallenge(Realm realm, int order, String
-            challenge,
-                                     String
-                                             translation) {
+            challenge, String translation) {
         Challenge c = realm.createObject(Challenge.class);
         c.setOrder(order);
         c.setChallenge(challenge, translation);
@@ -66,7 +64,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView
         db.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                RealmResults<Topic> results = realm.where(Topic.class).findAll();
+                RealmResults<Topic> results = realm.where(
+                        Topic.class).findAll();
                 if (results.size() == 0) {
                     // Adding Topic.
                     Topic travel = createTopic(realm, 0, "Travel",
@@ -162,10 +161,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView
         setSupportActionBar(toolbar);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = (NavigationView) findViewById(
+                R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         // Adding back button if we're in a fragment other than main fragment.
@@ -254,7 +255,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView
         String shareBody = "My progress:";
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
-        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject" +
+                " Here");
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
         startActivity(Intent.createChooser(sharingIntent, "Progress"));
 
