@@ -91,7 +91,7 @@ public class WordLearnFragment extends Fragment {
     private void startRecording() {
         mAudioRecord.startRecording();
         mIsRecording = true;
-        mAction.setText("I am Listening!");
+        //mAction.setText("I am Listening!");
         mRecordingThread = new Thread(new Runnable() {
             public void run() {
                 readData();
@@ -108,7 +108,7 @@ public class WordLearnFragment extends Fragment {
         transcript=transcript.replace("\"","");
         transcript=transcript.replace(" ","");
         float confidenceF=Float.parseFloat(confidence);
-        Toast.makeText(getContext(),"confidence= "+confidenceF+"\ntranscript= " +transcript,Toast.LENGTH_SHORT).show();
+       // Toast.makeText(getContext(),"confidence= "+confidenceF+"\ntranscript= " +transcript,Toast.LENGTH_SHORT).show();
         if(Float.parseFloat(confidence)>=0.7&&(transcript.compareToIgnoreCase(str)==0)) {
             spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#008744")), 0,
                     FrenchText.getText().toString().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -361,7 +361,7 @@ public class WordLearnFragment extends Fragment {
                     mIsRecording = false;
                     mAudioRecord.stop();
                     mStreamingClient.finish();
-                    mAction.setText("I am Not Listening");
+                    //mAction.setText("I am Not Listening");
                     //mRecordingBt.setText(R.string.start_recording);
                 } else {
                     if (mAudioRecord.getState() == AudioRecord.STATE_INITIALIZED) {
@@ -392,7 +392,7 @@ public class WordLearnFragment extends Fragment {
         @Override
         public void onDone(String utteranceId) {
             btnPlay.clearAnimation();
-            Toast.makeText(getContext(),"ssa",Toast.LENGTH_SHORT).show();
+           // Toast.makeText(getContext(),"ssa",Toast.LENGTH_SHORT).show();
         }
     };
 }

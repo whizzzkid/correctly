@@ -78,12 +78,13 @@ public class StreamingRecognizeClient implements
                         .setEncoding(AudioEncoding.LINEAR16)
                         .setSampleRate(mSamplingRate)
                         .setLanguageCode("fr-FR")
-                        .setProfanityFilter(true)
+                        .setProfanityFilter(false)
+
                         .build();
         StreamingRecognitionConfig streamingConfig =
                 StreamingRecognitionConfig.newBuilder()
                         .setConfig(config)
-                        .setInterimResults(true)
+                        .setInterimResults(false)
                         .setSingleUtterance(true)
                         .build();
 
