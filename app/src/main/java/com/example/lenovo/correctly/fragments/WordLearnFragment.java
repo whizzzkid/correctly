@@ -35,21 +35,23 @@ import com.example.lenovo.correctly.utils.ChallengeManager;
 import com.example.lenovo.correctly.utils.GoogleAudioFormat;
 
 import java.util.Locale;
+import java.util.Map;
+
+import static android.content.ContentValues.TAG;
 
 public class WordLearnFragment extends Fragment {
 
-    public ProgressBar progressBarLearning;
-    public ProgressBar progressBarNew;
-    public ProgressBar progressBarMastered;
+    public ProgressBar progressBarNew, progressBarLearned,
+            progressBarMastered, progressBarRevising, progressBarDone;
+    public TextView progressNew, progressLearned, progressMastered,
+            progressRevising, progressDone;
     public ImageView correctImage;
-    public TextView TranslationText;
-    public TextView ChallengeText;
-    public TextView mAction;
+    public TextView TranslationText, ChallengeText;
     public int i = 0;
     public String confidence = "";
     public String transcript = "";
-    public String topic;
-    public String level;
+    public String topic, level;
+    public Map<String, Integer> progress;
     String text = "";
     TextToSpeech t1;
     private ImageButton btnPlay;
@@ -83,7 +85,6 @@ public class WordLearnFragment extends Fragment {
     private void startRecording() {
         mAudioRecord.startRecording();
         mIsRecording = true;
-        //mAction.setText("I am Listening!");
         Thread mRecordingThread = new Thread(new Runnable() {
             public void run() {
                 readData();
@@ -97,12 +98,13 @@ public class WordLearnFragment extends Fragment {
         SpannableString spannable = new SpannableString(str);
         str = str.replace(" ", "");
         transcript = transcript.replace("\"", "").replace(" ", "");
-        if (Float.parseFloat(confidence) >= GoogleAudioFormat.CONFIDENCE  &&
-                (transcript.compareToIgnoreCase(str) == 0)) {
+        Boolean correct = (Float.parseFloat(confidence) >= GoogleAudioFormat
+                .CONFIDENCE  && (transcript.compareToIgnoreCase(str) == 0));
+        if (correct) {
             spannable.setSpan(new ForegroundColorSpan(Color.parseColor
                     ("#008744")), 0, ChallengeText.getText().toString()
                     .length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            correctImage.setImageResource(R.mipmap.launcher);
+            correctImage.setImageResource(R.mipmap.correct);
             correctImage.setAnimation(AnimationUtils.loadAnimation(getContext(),
                     R.anim.zoom_in));
         } else {
@@ -120,13 +122,15 @@ public class WordLearnFragment extends Fragment {
         ChallengeText.setText(spannable);
 
         // Loading new challenge
-        challenge = challengeManager.getNextChallenge(challenge.order);
+        challenge = challengeManager.getNextChallenge(challenge, correct);
+        Log.v(TAG, String.valueOf(challenge.order));
         Runnable r = new Runnable() {
             @Override
             public void run() {
                 ChallengeText.setText(challenge.challenge);
                 TranslationText.setText(challenge.challenge_translation);
                 correctImage.setImageResource(R.drawable.transparent);
+                updateProgress();
             }
         };
         Handler h = new Handler();
@@ -229,39 +233,82 @@ public class WordLearnFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
-        this.topic = (String) args.get("topic");
-        this.level = (String) args.get("level");
-        this.challengeManager = new ChallengeManager(this.topic, this.level);
-        this.challenge = challengeManager.getNextChallenge(-1);
+        topic = (String) args.get("topic");
+        level = (String) args.get("level");
+        challengeManager = new ChallengeManager(this.topic, this.level);
+        challenge = challengeManager.getFirstChallenge();
+    }
+
+    public void updateProgress() {
+        progress = challengeManager.getProgress();
+        Log.v(TAG, String.valueOf(progress));
+        int total = this.progress.get("total");
+        int newWordCount = this.progress.get("new");
+        int newWordProgress = (newWordCount*100)/total;
+        int learnedWordCount = this.progress.get("learned");
+        int learnedWordProgress = (learnedWordCount*100)/total;
+        int masteredWordCount = this.progress.get("mastered");
+        int masteredWordProgress = (masteredWordCount*100)/total;
+        int revisingWordCount = this.progress.get("revising");
+        int revisingWordProgress = (revisingWordCount*100)/total;
+        int doneWordCount = this.progress.get("done");
+        int doneWordProgress = (doneWordCount*100)/total;
+        progressNew.setText(String.format(Locale.getDefault(), "%s %d",
+                getString(R.string.new_words), newWordCount));
+        progressBarNew.setProgress(newWordProgress);
+        progressLearned.setText(String.format(Locale.getDefault(), "%s %d",
+                getString(R.string.learned_words), learnedWordCount));
+        progressBarLearned.setProgress(learnedWordProgress);
+        progressMastered.setText(String.format(Locale.getDefault(), "%s %d",
+                getString(R.string.mastered_words), masteredWordCount));
+        progressBarMastered.setProgress(masteredWordProgress);
+        progressRevising.setText(String.format(Locale.getDefault(), "%s %d",
+                getString(R.string.revising_words), revisingWordCount));
+        progressBarRevising.setProgress(revisingWordProgress);
+        progressDone.setText(String.format(Locale.getDefault(), "%s %d",
+                getString(R.string.done_words), doneWordCount));
+        progressBarDone.setProgress(doneWordProgress);
+        Log.v(TAG, String.valueOf(newWordProgress));
+        Log.v(TAG, String.valueOf(learnedWordProgress));
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View myFragmentView = inflater.inflate(R.layout.fragment_word_learn,
+        View view = inflater.inflate(R.layout.fragment_challenge,
                 container, false);
-        correctImage = (ImageView) myFragmentView.findViewById(R.id
+        correctImage = (ImageView) view.findViewById(R.id
                 .correctImage);
         correctImage.setVisibility(View.INVISIBLE);
-        progressBarLearning = (ProgressBar) myFragmentView.findViewById(R.id
-                .progressBar_Learning_Words);
-        progressBarNew = (ProgressBar) myFragmentView.findViewById(R.id
-                .progressBar_New_Words);
-        progressBarMastered = (ProgressBar) myFragmentView.findViewById(R.id
-                .progressBar_Of_Mastered_Words);
-        progressBarNew.setProgress(100);
-        progressBarLearning.setProgress(50);
-        progressBarMastered.setProgress(50);
-        TranslationText = (TextView) myFragmentView.findViewById(R.id
+        progressNew = (TextView) view.findViewById(R.id.new_words_text);
+        progressBarNew = (ProgressBar) view.findViewById(R.id
+                .new_words_progress);
+        progressLearned = (TextView) view.findViewById(R.id
+                .learned_words_text);
+        progressBarLearned = (ProgressBar) view.findViewById(R.id
+                .learned_words_progress);
+        progressMastered = (TextView) view.findViewById(R.id
+                .mastered_words_text);
+        progressBarMastered = (ProgressBar) view.findViewById(R.id
+                .mastered_words_progress);
+        progressRevising = (TextView) view.findViewById(R.id
+                .revising_words_text);
+        progressBarRevising = (ProgressBar) view.findViewById(R.id
+                .revising_words_progress);
+        progressDone = (TextView) view.findViewById(R.id.done_words_text);
+        progressBarDone = (ProgressBar) view.findViewById(R.id
+                .done_words_progress);
+        TranslationText = (TextView) view.findViewById(R.id
                 .TranslationText);
-        ChallengeText = (TextView) myFragmentView.findViewById(R.id
+        ChallengeText = (TextView) view.findViewById(R.id
                 .ChallengeText);
+        mRecordingBt = (ImageButton) view.findViewById(R.id.btn_mic);
+        btnPlay = (ImageButton) view.findViewById(R.id.btn_play);
+
         ChallengeText.setAnimation(AnimationUtils.loadAnimation(getContext(),
                 R.anim.zoom_in));
         TranslationText.setAnimation(AnimationUtils.loadAnimation(getContext(),
                 R.anim.zoom_in));
-        mAction = (TextView) myFragmentView.findViewById
-                (R.id.mAction);
         final ForegroundColorSpan fcs = new ForegroundColorSpan(Color.rgb
                 (158, 158, 158));
         TranslationText.setText(challenge.challenge_translation);
@@ -276,7 +323,6 @@ public class WordLearnFragment extends Fragment {
 
 
         });
-        btnPlay = (ImageButton) myFragmentView.findViewById(R.id.btn_play);
         btnPlay.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -294,9 +340,8 @@ public class WordLearnFragment extends Fragment {
 
         mAudioRecord = GoogleAudioFormat.getAudioRecorder();
 
+        updateProgress();
         initialize();
-
-        mRecordingBt = (ImageButton) myFragmentView.findViewById(R.id.btn_mic);
         mRecordingBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -320,8 +365,7 @@ public class WordLearnFragment extends Fragment {
                 }
             }
         });
-
         // Inflate the layout for this fragment
-        return myFragmentView;
+        return view;
     }
 }

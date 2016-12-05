@@ -28,7 +28,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,33 +42,27 @@ import static android.content.ContentValues.TAG;
 
 
 public class SentenceLearnFragment extends Fragment {
-    public int MainIterator=0;
+
+    public ProgressBar progressBarNew, progressBarLearned,
+            progressBarMastered, progressBarRevising, progressBarDone;
+    public TextView progressNew, progressLearned, progressMastered,
+            progressRevising, progressDone;
+
+    public int MainIterator = 0;
     public String sentence = "";
     public String[] MainSentence;
-    private final int SPEECH_RECOGNITION_CODE = 1;
-    public TextView textView;
-    public TextView EnglishText;
-    public TextView FrenchText;
-    public TextView mAction;
+    public TextView TranslationText, ChallengeText;
 
-    public TextView LearningSentences;
-    public TextView NewSentences;
-    public TextView MasteredSentences;
-    // public EditText editText;
-    public RatingBar ratingBar;
+    public TextView LearningSentences, NewSentences, MasteredSentences;
+
     String text = "";
     TextToSpeech t1;
     private SpannableStringBuilder sb;
-    private TextView txtOutput;
-    private ImageButton btnMicrophone;
     private ImageButton btnPlay;
-    private View myFragmentView;
-    public int i=0;
-    public String wordToCheck="";
+    private View view;
+    public int i = 0;
+    public String wordToCheck = "";
     public String[] list_of_wordsFrench = new String[]{"Bonjour voici le$magasin"};
-
-    public boolean flag_play=false;
-    public boolean flag_record=false;
 
     private AudioRecord mAudioRecord = null;
     private Thread mRecordingThread = null;
@@ -77,21 +70,19 @@ public class SentenceLearnFragment extends Fragment {
     private ImageButton mRecordingBt;
     private TextView mConsoleMsg;
     private StreamingRecognizeClient mStreamingClient;
-    public String confidence="";
-    public String transcript="";
+    public String confidence = "";
+    public String transcript = "";
     public String[] listOfWords;
-    public String[] list_of_wordsEnglish=new String[]{"She likes to cook"};
+    public String[] list_of_wordsEnglish = new String[]{"She likes to cook"};
 
-
-    public ProgressBar progressBarLearning;
-    public ProgressBar progressBarNew;
-    public ProgressBar progressBarMastered;
     public ImageView correctImage;
+
     public SentenceLearnFragment() {
         // Required empty public constructor
     }
-    public int wTC_one=0;
-    public int wTC_two=0;
+
+    public int wTC_one = 0;
+    public int wTC_two = 0;
 
     private void startRecording() {
         mAudioRecord.startRecording();
@@ -106,28 +97,25 @@ public class SentenceLearnFragment extends Fragment {
 
     private SpannableStringBuilder addClickablePart(String str) {
 
-        str=str.replace("$"," ");
-        listOfWords=str.split(" ");
-        MainSentence=sentence.split(" ");
-
-
+        str = str.replace("$", " ");
+        listOfWords = str.split(" ");
+        MainSentence = sentence.split(" ");
 
 
         sb = new SpannableStringBuilder(str);
-        int idx1 =0;
+        int idx1 = 0;
         int idx2 = 0;
-        for(int i=0;i<listOfWords.length; i++)
-        {
+        for (int i = 0; i < listOfWords.length; i++) {
 
-            idx1=str.indexOf(listOfWords[i]);
-            idx2 = str.lastIndexOf(listOfWords[i], idx1) +listOfWords[i].length() ;
+            idx1 = str.indexOf(listOfWords[i]);
+            idx2 = str.lastIndexOf(listOfWords[i], idx1) + listOfWords[i].length();
 
             final String clickString = str.substring(idx1, idx2);
             sb.setSpan(new ClickableSpan() {
 
                 @Override
                 public void onClick(View widget) {
-                    if(!mIsRecording)
+                    if (!mIsRecording)
                         t1.speak(clickString, TextToSpeech.QUEUE_FLUSH, null);
                 }
             }, idx1, idx2, 0);
@@ -138,12 +126,10 @@ public class SentenceLearnFragment extends Fragment {
     }
 
 
-
-    public void changeColorOfWord()
-    {
+    public void changeColorOfWord() {
 
         try {
-            String str = FrenchText.getText().toString();
+            String str = ChallengeText.getText().toString();
             int idx1 = wTC_one;
             int idx2 = wTC_two;
 
@@ -152,33 +138,29 @@ public class SentenceLearnFragment extends Fragment {
             transcript = transcript.replace("\"", "");
             //transcript = transcript.replaceFirst(" ", "");
             //transcript.replace("\\s","$");
-            Log.wtf(TAG,"transcript="+"!"+wordToCheck.replace("$"," ")+"!");
+            Log.v(TAG, "transcript=" + "!" + wordToCheck.replace("$", " ") + "!");
 
-
-
-            float confidenceF = Float.parseFloat(confidence);
-
-            if (Float.parseFloat(confidence) >= 0.7&&(transcript
-                    .compareToIgnoreCase(wordToCheck.replace("$"," "))==0))
-                sb.setSpan(new ForegroundColorSpan(Color.parseColor("#008744")), wTC_one, wTC_two,
+            if (Float.parseFloat(confidence) >= GoogleAudioFormat.CONFIDENCE &&
+                    (transcript.compareToIgnoreCase(
+                            wordToCheck.replace("$", " ")) == 0))
+                sb.setSpan(new ForegroundColorSpan(Color.parseColor
+                                ("#008744")), wTC_one, wTC_two,
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
             else
-                sb.setSpan(new ForegroundColorSpan(Color.parseColor("#d62d20")), wTC_one, wTC_two,
+                sb.setSpan(new ForegroundColorSpan(Color.parseColor
+                                ("#d62d20")), wTC_one, wTC_two,
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-            FrenchText.setText(sb);
+            ChallengeText.setText(sb);
             MainIterator++;
             after_micClick();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             Toast.makeText(getContext(), "wTC_one= " + wTC_one + "\nwTC_two= " + wTC_two,
                     Toast.LENGTH_SHORT).show();
         }
 
     }
-
 
 
     private void readData() {
@@ -206,26 +188,22 @@ public class SentenceLearnFragment extends Fragment {
             public void handleMessage(Message msg) {
                 if (msg != null) {
 
-                    String[] help=msg.obj.toString().split("\n");
-                    Log.w("1",msg.obj.toString());
-                    for(int i=0;i<help.length;i++)
-                    {
+                    String[] help = msg.obj.toString().split("\n");
+                    Log.w("1", msg.obj.toString());
+                    for (int i = 0; i < help.length; i++) {
                         /*if(help[i].contains("transcript:")) {
                             transcript = help[i].replace("transcript:", "");
                             mConsoleMsg.setText("\ntranscript: " + transcript
                                     + mConsoleMsg.getText());
                         }*/
 
-                        if(help[i].contains("is_final: true"))
-                        {
-                            if(help[i-2].contains("confidence:"))
-                            {
-                                confidence=help[i-2].replace("confidence:","");
-                                transcript=help[i-3].replaceAll("\\s*transcript:\\s*","");
-                            }
-                            else{
-                                confidence="1";
-                                transcript=help[i-2].replaceAll("\\s*transcript:\\s*","");
+                        if (help[i].contains("is_final: true")) {
+                            if (help[i - 2].contains("confidence:")) {
+                                confidence = help[i - 2].replace("confidence:", "");
+                                transcript = help[i - 3].replaceAll("\\s*transcript:\\s*", "");
+                            } else {
+                                confidence = "1";
+                                transcript = help[i - 2].replaceAll("\\s*transcript:\\s*", "");
                             }
                             //confidence=help[i].replace("confidence:","");
 
@@ -291,8 +269,6 @@ public class SentenceLearnFragment extends Fragment {
     }
 
 
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -302,51 +278,40 @@ public class SentenceLearnFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
-
-        myFragmentView = inflater.inflate(R.layout.fragment_word_learn, container, false);
-        EnglishText = (TextView) myFragmentView.findViewById(R.id.TranslationText);
-        FrenchText = (TextView) myFragmentView.findViewById(R.id.ChallengeText);
-        mAction = (TextView) myFragmentView.findViewById(R.id.mAction);
-
-        progressBarLearning=(ProgressBar) myFragmentView.findViewById(R.id.progressBar_Learning_Words);
-        progressBarNew=(ProgressBar) myFragmentView.findViewById(R.id.progressBar_New_Words);
-        progressBarMastered=(ProgressBar) myFragmentView.findViewById(R.id.progressBar_Of_Mastered_Words);
-        progressBarNew.setProgress(100);
-
-
-        progressBarLearning.setProgress(50);
-
-        progressBarMastered.setProgress(50);
-        correctImage= (ImageView) myFragmentView.findViewById(R.id.correctImage);
+        view = inflater.inflate(R.layout.fragment_challenge, container, false);
+        progressNew = (TextView) view.findViewById(R.id.new_words_text);
+        progressBarNew = (ProgressBar) view.findViewById(R.id
+                .new_words_progress);
+        progressLearned = (TextView) view.findViewById(R.id
+                .learned_words_text);
+        progressBarLearned = (ProgressBar) view.findViewById(R.id
+                .learned_words_progress);
+        progressMastered = (TextView) view.findViewById(R.id
+                .mastered_words_text);
+        progressBarMastered = (ProgressBar) view.findViewById(R.id
+                .mastered_words_progress);
+        progressRevising = (TextView) view.findViewById(R.id
+                .revising_words_text);
+        progressBarRevising = (ProgressBar) view.findViewById(R.id
+                .revising_words_progress);
+        progressDone = (TextView) view.findViewById(R.id.done_words_text);
+        progressBarDone = (ProgressBar) view.findViewById(R.id
+                .done_words_progress);
+        TranslationText = (TextView) view.findViewById(R.id.TranslationText);
+        ChallengeText = (TextView) view.findViewById(R.id.ChallengeText);
+        correctImage = (ImageView) view.findViewById(R.id.correctImage);
         correctImage.setVisibility(View.INVISIBLE);
         correctImage.setImageResource(R.drawable.transparent);
-
-        FrenchText.setMovementMethod(LinkMovementMethod.getInstance());
-        sentence=list_of_wordsFrench[0];
-        FrenchText.setText(sentence);
-        FrenchText.setText(addClickablePart(sentence), TextView.BufferType.SPANNABLE);
+        ChallengeText.setMovementMethod(LinkMovementMethod.getInstance());
+        sentence = list_of_wordsFrench[0];
+        ChallengeText.setText(sentence);
+        ChallengeText.setText(addClickablePart(sentence), TextView.BufferType.SPANNABLE);
 // Span to set text color to some RGB value
         final ForegroundColorSpan fcs = new ForegroundColorSpan(Color.rgb(158, 158, 158));
 
-        EnglishText.setText(list_of_wordsEnglish[0]);
+        TranslationText.setText(list_of_wordsEnglish[0]);
 
-        FrenchText.setText(addClickablePart(list_of_wordsFrench[0]));
-        /*FrenchText.setAnimation(AnimationUtils.loadAnimation(getContext(),
-                R.anim.zoom_in));
-        EnglishText.setAnimation(AnimationUtils.loadAnimation(getContext(),
-                R.anim.zoom_in));*/
-        // editText.setText(sb);
-
-
-
-
-        NewSentences = (TextView) myFragmentView.findViewById(R.id.progress_Of_New_Words);
-        LearningSentences = (TextView) myFragmentView.findViewById(R.id.progress_Of_Learning_Words);
-        MasteredSentences = (TextView) myFragmentView.findViewById(R.id.progress_Of_Mastered_Words);
-        NewSentences.setText("New sentences:");
-        LearningSentences.setText("Learning sentences:");
-        MasteredSentences.setText("Mastered sentences:");
+        ChallengeText.setText(addClickablePart(list_of_wordsFrench[0]));
 
         t1 = new TextToSpeech(getContext(), new TextToSpeech.OnInitListener() {
             @Override
@@ -358,7 +323,7 @@ public class SentenceLearnFragment extends Fragment {
                 }
             }
         });
-        btnPlay = (ImageButton) myFragmentView.findViewById(R.id.btn_play);
+        btnPlay = (ImageButton) view.findViewById(R.id.btn_play);
         btnPlay.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -376,11 +341,11 @@ public class SentenceLearnFragment extends Fragment {
                     EnglishText.setText(list_of_wordsEnglish[i]);
                 }*/
 
-                String toSpeak = FrenchText.getText().toString();
-                if(!mIsRecording)
+                String toSpeak = ChallengeText.getText().toString();
+                if (!mIsRecording)
                     t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
-                SpannableStringBuilder ssb=addClickablePart(FrenchText.getText().toString());
-                FrenchText.setText(ssb);
+                SpannableStringBuilder ssb = addClickablePart(ChallengeText.getText().toString());
+                ChallengeText.setText(ssb);
 
             }
         });
@@ -389,8 +354,7 @@ public class SentenceLearnFragment extends Fragment {
 
         initialize();
 
-        mRecordingBt = (ImageButton) myFragmentView.findViewById(R.id.btn_mic);
-        mConsoleMsg = (TextView) myFragmentView.findViewById(R.id.mConsoleMsg);
+        mRecordingBt = (ImageButton) view.findViewById(R.id.btn_mic);
         mRecordingBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -414,7 +378,7 @@ public class SentenceLearnFragment extends Fragment {
 
 
         // Inflate the layout for this fragment
-        return myFragmentView;
+        return view;
     }
 
 
@@ -422,7 +386,6 @@ public class SentenceLearnFragment extends Fragment {
         mIsRecording = true;
         if (mAudioRecord.getState() == AudioRecord.STATE_INITIALIZED) {
             // mRecordingBt.setText(R.string.stop_recording);
-
 
 
             if (MainIterator < MainSentence.length) {
@@ -433,20 +396,19 @@ public class SentenceLearnFragment extends Fragment {
 
                 wTC_one = str.indexOf(MainSentence[MainIterator]);
                 wTC_two = str.lastIndexOf(MainSentence[MainIterator], wTC_one) + MainSentence[MainIterator].length();
-                Log.wtf("3","word wTC_one="+ wTC_one);
-                Log.wtf("2","word wTC_two="+wTC_two);
+                Log.wtf("3", "word wTC_one=" + wTC_one);
+                Log.wtf("2", "word wTC_two=" + wTC_two);
                 wordToCheck = MainSentence[MainIterator];
-                Log.w("1","word to check="+wordToCheck);
-                wordToCheck=wordToCheck.replace(" ","");
-                wordToCheck=wordToCheck.replace(" ","");
-                sb.setSpan(new StyleSpan(Typeface.BOLD),wTC_one, wTC_two, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                FrenchText.setText(sb);
+                Log.w("1", "word to check=" + wordToCheck);
+                wordToCheck = wordToCheck.replace(" ", "");
+                wordToCheck = wordToCheck.replace(" ", "");
+                sb.setSpan(new StyleSpan(Typeface.BOLD), wTC_one, wTC_two, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                ChallengeText.setText(sb);
 
                 startRecording();
-            }
-            else {
+            } else {
                 mRecordingBt.clearAnimation();
-                FrenchText.setAnimation(AnimationUtils.loadAnimation(getContext(),
+                ChallengeText.setAnimation(AnimationUtils.loadAnimation(getContext(),
                         R.anim.zoom_in_sentence));
                 mIsRecording = false;
 
@@ -455,8 +417,6 @@ public class SentenceLearnFragment extends Fragment {
             Log.i(this.getClass().getSimpleName(), "Not Initialized yet.");
         }
     }
-
-
 
 
 }
