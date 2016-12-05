@@ -1,0 +1,163 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="com.example.lenovo.correctly.fragments.WordLearnFragment">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginRight="10dp"
+        android:id="@+id/liner_layout_one"
+        android:weightSum="1"
+        android:background="@drawable/shape_words">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="32sp"
+            android:ems="30"
+            android:id="@+id/ChallengeText"
+            android:gravity="center"
+            android:layout_marginBottom="13dp" />
+
+        <ImageButton
+                android:id="@+id/btn_play"
+                android:layout_width="41dp"
+                android:layout_height="40dp"
+                android:background="@null"
+                android:scaleType="centerCrop"
+                android:src="@drawable/play"
+                android:layout_marginTop="5dp"
+                android:contentDescription="@string/play_button"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:ems="30"
+            android:id="@+id/TranslationText"
+                />
+
+        <ImageButton
+            android:id="@+id/btn_mic"
+            android:layout_width="44dp"
+            android:layout_height="50dp"
+            android:background="@null"
+            android:scaleType="centerCrop"
+            android:src="@drawable/microphone"
+            android:contentDescription="@string/record_mic"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="43dp"
+        android:weightSum="1"
+        android:background="@drawable/shape_sentences"
+        android:layout_below="@+id/liner_layout_one"
+        android:layout_marginTop="43dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/new_words"
+            android:textSize="20sp"
+            android:ems="30"
+            android:id="@+id/new_words_text"
+            android:gravity="center"
+            android:textAlignment="viewStart"/>
+        <ProgressBar
+            style="@style/CustomProgressBarGreen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/new_words_progress"
+                />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/learned_words"
+            android:textSize="20sp"
+            android:ems="30"
+            android:id="@+id/learned_words_text"
+            android:gravity="center"
+            android:textAlignment="viewStart"/>
+        <ProgressBar
+            style="@style/CustomProgressBarGreen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/learned_words_progress"
+                />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/mastered_words"
+            android:textSize="20sp"
+            android:ems="30"
+            android:id="@+id/mastered_words_text"
+            android:gravity="center"
+            android:textAlignment="viewStart"/>
+        <ProgressBar
+            style="@style/CustomProgressBarGreen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/mastered_words_progress"
+                />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/revising_words"
+            android:textSize="20sp"
+            android:ems="30"
+            android:id="@+id/revising_words_text"
+            android:gravity="center"
+            android:textAlignment="viewStart"/>
+        <ProgressBar
+            style="@style/CustomProgressBarGreen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/revising_words_progress"
+                />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/done_words"
+            android:textSize="20sp"
+            android:ems="30"
+            android:id="@+id/done_words_text"
+            android:gravity="center"
+            android:textAlignment="viewStart"/>
+        <ProgressBar
+            style="@style/CustomProgressBarGreen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/done_words_progress"
+                />
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:srcCompat="@drawable/launcher"
+        android:id="@+id/correctImage"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="28dp" />
+
+</RelativeLayout>

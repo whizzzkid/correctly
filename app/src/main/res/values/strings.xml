@@ -40,5 +40,12 @@
     <string name="stop_recording">Stop Recording</string>
     <string name="card_image">Card Image</string>
     <string name="foreground_span_color">#d62d20</string>
+    <string name="new_words">New:</string>
+    <string name="record_mic">Record Mic</string>
+    <string name="play_button">Play Button</string>
+    <string name="learned_words">Learned:</string>
+    <string name="mastered_words">Mastered:</string>
+    <string name="revising_words">Revising:</string>
+    <string name="done_words">Done:</string>
 
 </resources>
