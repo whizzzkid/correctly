@@ -1,10 +1,15 @@
 package com.example.lenovo.correctly;
 
+import android.*;
+import android.Manifest;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -28,6 +33,9 @@ import static android.content.ContentValues.TAG;
 
 public class MainActivity extends AppCompatActivity implements NavigationView
         .OnNavigationItemSelectedListener {
+
+
+    private static final int REQUEST_MICROPHONE = 2;
 
     public Challenge createChallenge(Realm realm, int order, String
             challenge, String translation) {
@@ -71,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView
                 R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+
         // Adding back button if we're in a fragment other than main fragment.
         getFragmentManager().addOnBackStackChangedListener(new FragmentManager
                 .OnBackStackChangedListener() {
@@ -90,6 +99,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView
                 }
             }
         });
+
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.RECORD_AUDIO},
+                    REQUEST_MICROPHONE);
+        }
+
+
+
 
         Realm.init(this);
         Log.v(TAG, "Populating DB");
@@ -217,6 +237,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
