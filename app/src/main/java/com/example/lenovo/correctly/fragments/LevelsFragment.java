@@ -64,19 +64,18 @@ public class LevelsFragment extends Fragment implements CardAdapter.Listener {
     @Override
     public void onItemClicked(CardItem level) {
         Log.v("test", level.name);
+        Fragment fragment = null;
         Bundle args = new Bundle();
+        args.putString("topic", this.topic);
         if (level.name.equals("Basic Words")) {
-            args.putString("challenge", "Bonjour");
-            args.putString("translation", "Good Morning");
-            new FragmentLoader(getFragmentManager(), args,
-                    new WordLearnFragment()).Load();
+            args.putString("level", "Basic Words");
+            fragment = new WordLearnFragment();
         }
         if (level.name.equals("Sentences")) {
-            args.putString("challenge", "Bonjour, voici le magasin.");
-            args.putString("translation", "Good morning, here is the store.");
-            new FragmentLoader(getFragmentManager(), args,
-                    new SentenceLearnFragment()).Load();
+            args.putString("level", "Sentences");
+            fragment = new SentenceLearnFragment();
         }
+        new FragmentLoader(getFragmentManager(), args, fragment).Load();
     }
 
     class LoadLevelsTask extends AsyncTask<Void, Void, List<CardItem>> {
