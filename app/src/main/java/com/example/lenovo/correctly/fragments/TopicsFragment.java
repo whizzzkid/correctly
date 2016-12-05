@@ -51,11 +51,13 @@ public class TopicsFragment extends Fragment implements CardAdapter.Listener {
         FragmentTransaction ft=fragmentManager.beginTransaction();
         Fragment levelsFragment=new LevelsFragment();
         levelsFragment.setArguments(args);
-        ft.setCustomAnimations(
-                        R.animator.zoom_from_left_corner_left_out,
-                R.animator.zoom_from_right_corner_right_in);
+        ft.setCustomAnimations(R.animator.slide_in_left,
+                R.animator.slide_out_right, R.animator.slide_in_left,R.animator.slide_out_right);
         ft.replace(R.id.fragment_container,levelsFragment,"tt")
                 .addToBackStack("tt").commit();
+
+
+
 
 
        /* new FragmentLoader(, args,

@@ -113,7 +113,7 @@ public class SentenceLearnFragment extends Fragment {
 
 
 
-        sb = new SpannableStringBuilder(str.replace("$"," "));
+        sb = new SpannableStringBuilder(str);
         int idx1 =0;
         int idx2 = 0;
         for(int i=0;i<listOfWords.length; i++)
@@ -323,13 +323,14 @@ public class SentenceLearnFragment extends Fragment {
         correctImage.setImageResource(R.drawable.transparent);
 
         FrenchText.setMovementMethod(LinkMovementMethod.getInstance());
+        sentence=list_of_wordsFrench[0];
+        FrenchText.setText(sentence);
         FrenchText.setText(addClickablePart(sentence), TextView.BufferType.SPANNABLE);
 // Span to set text color to some RGB value
         final ForegroundColorSpan fcs = new ForegroundColorSpan(Color.rgb(158, 158, 158));
 
         EnglishText.setText(list_of_wordsEnglish[0]);
-        sentence=list_of_wordsFrench[0];
-        FrenchText.setText(sentence);
+
         FrenchText.setText(addClickablePart(list_of_wordsFrench[0]));
         /*FrenchText.setAnimation(AnimationUtils.loadAnimation(getContext(),
                 R.anim.zoom_in));
@@ -432,7 +433,10 @@ public class SentenceLearnFragment extends Fragment {
 
                 wTC_one = str.indexOf(MainSentence[MainIterator]);
                 wTC_two = str.lastIndexOf(MainSentence[MainIterator], wTC_one) + MainSentence[MainIterator].length();
+                Log.wtf("3","word wTC_one="+ wTC_one);
+                Log.wtf("2","word wTC_two="+wTC_two);
                 wordToCheck = MainSentence[MainIterator];
+                Log.w("1","word to check="+wordToCheck);
                 wordToCheck=wordToCheck.replace(" ","");
                 wordToCheck=wordToCheck.replace(" ","");
                 sb.setSpan(new StyleSpan(Typeface.BOLD),wTC_one, wTC_two, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -442,6 +446,8 @@ public class SentenceLearnFragment extends Fragment {
             }
             else {
                 mRecordingBt.clearAnimation();
+                FrenchText.setAnimation(AnimationUtils.loadAnimation(getContext(),
+                        R.anim.zoom_in_sentence));
                 mIsRecording = false;
 
             }
