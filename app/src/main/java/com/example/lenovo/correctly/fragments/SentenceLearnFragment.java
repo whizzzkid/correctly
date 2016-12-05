@@ -8,9 +8,7 @@ import com.google.android.gms.security.ProviderInstaller;
 import android.app.Fragment;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.media.AudioFormat;
 import android.media.AudioRecord;
-import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -34,16 +32,14 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import static android.content.ContentValues.TAG;
-
 import com.example.lenovo.correctly.MainActivity;
 import com.example.lenovo.correctly.R;
 import com.example.lenovo.correctly.clients.StreamingRecognizeClient;
+import com.example.lenovo.correctly.utils.GoogleAudioFormat;
 
-import java.io.InputStream;
 import java.util.Locale;
 
-import io.grpc.ManagedChannel;
+import static android.content.ContentValues.TAG;
 
 
 public class SentenceLearnFragment extends Fragment {
@@ -72,12 +68,6 @@ public class SentenceLearnFragment extends Fragment {
     public String wordToCheck="";
     public String[] list_of_wordsFrench = new String[]{"Bonjour voici le$magasin"};
 
-    private static final String HOSTNAME = "speech.googleapis.com";
-    private static final int PORT = 443;
-    private static final int RECORDER_SAMPLERATE = 16000;
-    private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
-    private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
-
     public boolean flag_play=false;
     public boolean flag_record=false;
 
@@ -87,7 +77,6 @@ public class SentenceLearnFragment extends Fragment {
     private ImageButton mRecordingBt;
     private TextView mConsoleMsg;
     private StreamingRecognizeClient mStreamingClient;
-    private int mBufferSize;
     public String confidence="";
     public String transcript="";
     public String[] listOfWords;
@@ -193,9 +182,10 @@ public class SentenceLearnFragment extends Fragment {
 
 
     private void readData() {
-        byte sData[] = new byte[mBufferSize];
+        byte sData[] = new byte[GoogleAudioFormat.BufferSize];
         while (mIsRecording) {
-            int bytesRead = mAudioRecord.read(sData, 0, mBufferSize);
+            int bytesRead = mAudioRecord.read(sData, 0, GoogleAudioFormat
+                    .BufferSize);
             if (bytesRead > 0) {
                 try {
                     mStreamingClient.recognizeBytes(sData, bytesRead);
@@ -203,7 +193,8 @@ public class SentenceLearnFragment extends Fragment {
                     e.printStackTrace();
                 }
             } else {
-                Log.e(getClass().getSimpleName(), "Error while reading bytes: " + bytesRead);
+                Log.e(getClass().getSimpleName(), "Error while reading bytes:" +
+                        " " + bytesRead);
             }
         }
     }
@@ -277,12 +268,8 @@ public class SentenceLearnFragment extends Fragment {
                 }
 
                 try {
-                    InputStream credentials = getActivity().getAssets().open
-                            ("credentials.json");
-                    ManagedChannel channel = StreamingRecognizeClient.createChannel(
-                            HOSTNAME, PORT, credentials);
-                    mStreamingClient = new StreamingRecognizeClient(channel,
-                            RECORDER_SAMPLERATE, handler);
+                    mStreamingClient = GoogleAudioFormat.getStreamRecognizer
+                            (getActivity(), handler);
                 } catch (Exception e) {
                     Log.e(MainActivity.class.getSimpleName(), "Error", e);
                 }
@@ -397,14 +384,7 @@ public class SentenceLearnFragment extends Fragment {
             }
         });
 
-        mBufferSize = AudioRecord.getMinBufferSize(RECORDER_SAMPLERATE, AudioFormat
-                .CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT) * 2;
-
-        mAudioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC,
-                RECORDER_SAMPLERATE,
-                RECORDER_CHANNELS,
-                RECORDER_AUDIO_ENCODING,
-                mBufferSize);
+        mAudioRecord = GoogleAudioFormat.getAudioRecorder();
 
         initialize();
 

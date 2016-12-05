@@ -38,7 +38,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         CardItem item = mItems.get(i);
-        viewHolder.tvMovie.setText(item.name);
+        viewHolder.cardTitle.setText(item.name);
         viewHolder.imgThumbnail.setImageBitmap(item.imageBitmap);
         if (mListener != null) {
             viewHolder.cardView.setOnClickListener(this);
@@ -69,13 +69,14 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 
     class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imgThumbnail;
-        TextView tvMovie;
+        TextView cardTitle;
         CardView cardView;
 
         ViewHolder(View itemView) {
             super(itemView);
-            imgThumbnail = (ImageView) itemView.findViewById(R.id.img_thumbnail);
-            tvMovie = (TextView) itemView.findViewById(R.id.card_title);
+            imgThumbnail = (ImageView) itemView.findViewById(R.id
+                    .img_thumbnail);
+            cardTitle = (TextView) itemView.findViewById(R.id.card_title);
             cardView = (CardView) itemView.findViewById(R.id.card_view);
         }
     }

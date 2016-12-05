@@ -39,5 +39,6 @@
     <string name="start_recording">Start Recording</string>
     <string name="stop_recording">Stop Recording</string>
     <string name="card_image">Card Image</string>
+    <string name="foreground_span_color">#d62d20</string>
 
 </resources>
