@@ -3,9 +3,9 @@ package com.example.lenovo.correctly.models;
 import io.realm.RealmObject;
 
 public class Challenge extends RealmObject {
-    private String challenge, challenge_translation;
-    private int order;
-    private int state = DataModelConstants.CHALLENGE_STATE_NEW;
+    public String challenge, challenge_translation;
+    public int order;
+    public int state = DataModelConstants.CHALLENGE_STATE_NEW;
 
     public void setOrder(int order) {
         this.order = order;
@@ -17,7 +17,13 @@ public class Challenge extends RealmObject {
         this.challenge_translation = challenge_translation;
     }
 
-    public void goToNextState() {
-        this.state = state++;
+    public void goToNextState(Boolean wasCorrect) {
+        if (wasCorrect) {
+            this.state = Math.min(state+1, DataModelConstants
+                    .CHALLENGE_STATE_DONE);
+        } else {
+            this.state = Math.max(state-2, DataModelConstants
+                    .CHALLENGE_STATE_NEW);
+        }
     }
 }

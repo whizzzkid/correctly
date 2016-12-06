@@ -66,40 +66,26 @@ public class LevelsFragment extends Fragment implements CardAdapter.Listener {
     @Override
     public void onItemClicked(CardItem level) {
         Log.v("test", level.name);
+        Fragment fragment = null;
         Bundle args = new Bundle();
+        args.putString("topic", this.topic);
         if (level.name.equals("Basic Words")) {
-            args.putString("challenge", "Bonjour");
-            args.putString("translation", "Good Morning");
-            /*new FragmentLoader(getFragmentManager(), args,
-                    new WordLearnFragment()).Load();*/
-
-            FragmentManager fragmentManager= getFragmentManager();
-            FragmentTransaction ft=fragmentManager.beginTransaction();
-            Fragment wordsFragment=new WordLearnFragment();
-            wordsFragment.setArguments(args);
-            ft.setCustomAnimations(R.animator.slide_in_left,
-                    R.animator.slide_out_right, R.animator.slide_in_left,R.animator.slide_out_right);
-            ft.replace(R.id.fragment_container,wordsFragment,"tw")
-                    .addToBackStack("tw").commit();
-
-
-
-
+            args.putString("level", "Basic Words");
+            fragment = new WordLearnFragment();
         }
         if (level.name.equals("Sentences")) {
-            args.putString("challenge", "Bonjour, voici le magasin.");
-            args.putString("translation", "Good morning, here is the store.");
-           /* new FragmentLoader(getFragmentManager(), args,
-                    new SentenceLearnFragment()).Load();*/
-            FragmentManager fragmentManager= getFragmentManager();
-            FragmentTransaction ft=fragmentManager.beginTransaction();
-            Fragment sentencesFragment=new SentenceLearnFragment();
-            sentencesFragment.setArguments(args);
-            ft.setCustomAnimations(R.animator.slide_in_left,
-                    R.animator.slide_out_right, R.animator.slide_in_left,R.animator.slide_out_right);
-            ft.replace(R.id.fragment_container,sentencesFragment,"ts")
-                    .addToBackStack("ts").commit();
+            args.putString("level", "Sentences");
+            fragment = new SentenceLearnFragment();
         }
+        FragmentManager fragmentManager= getFragmentManager();
+        FragmentTransaction ft=fragmentManager.beginTransaction();
+        fragment.setArguments(args);
+        ft.setCustomAnimations(R.animator.slide_in_left,
+                R.animator.slide_out_right, R.animator.slide_in_left,R
+                        .animator.slide_out_right);
+        ft.replace(R.id.fragment_container, fragment, "tw")
+                .addToBackStack("tw").commit();
+        new FragmentLoader(getFragmentManager(), args, fragment).Load();
     }
 
     class LoadLevelsTask extends AsyncTask<Void, Void, List<CardItem>> {

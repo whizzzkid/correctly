@@ -1,6 +1,5 @@
 package com.example.lenovo.correctly;
 
-import android.*;
 import android.Manifest;
 import android.app.FragmentManager;
 import android.content.Intent;
@@ -160,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView
 
                     // Adding School Challenges.
                     school_level0.challenges.add(
-                            createChallenge(realm, 0, "Garçon", "Boy"));
+                            createChallenge(realm, 0, "Bonjour", "Good Morning"));
                     school_level0.challenges.add(
                             createChallenge(realm, 1, "Fille", "Boy"));
                     school_level0.challenges.add(

@@ -1,13 +1,15 @@
 package com.example.lenovo.correctly.models;
 
-class DataModelConstants {
-    static int LEVEL_STATE_NEW = 0;
-    static int LEVEL_STATE_WIP = 1;
-    static int LEVEL_STATE_DONE = 2;
-    static int LEVEL_START_INDEX = 0;
-    static int CHALLENGE_STATE_NEW = 0;
-    static int CHALLENGE_STATE_LEARNED = 1;
-    static int CHALLENGE_STATE_MASTERED = 2;
-    static int CHALLENGE_STATE_REVISE = 3;
-    static int CHALLENGE_STATE_DONE = 4;
+public class DataModelConstants {
+    public static int LEVEL_STATE_NEW = 0;
+    public static int LEVEL_STATE_WIP = 1;
+    public static int LEVEL_STATE_DONE = 2;
+    public static int LEVEL_START_INDEX = 0;
+    public static int CHALLENGE_STATE_NEW = 0;
+    public static int CHALLENGE_STATE_LEARNED = 1;
+    public static int CHALLENGE_STATE_MASTERED = 2;
+    public static int CHALLENGE_STATE_REVISE = 3;
+    public static int CHALLENGE_STATE_DONE = 4;
+    public static int SKIP_IF_CORRECT = 5;
+    public static int SKIP_IF_NOT_CORRECT = 3;
 }
