@@ -35,7 +35,7 @@
                 android:textSize="@dimen/font_title"/>
 
         <ProgressBar
-                style="@style/CustomProgressBarBlue"
+                style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/progress"

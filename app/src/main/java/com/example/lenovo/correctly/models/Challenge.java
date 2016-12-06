@@ -2,9 +2,6 @@ package com.example.lenovo.correctly.models;
 
 import io.realm.RealmObject;
 
-import static com.google.common.primitives.UnsignedInts.max;
-import static com.google.common.primitives.UnsignedInts.min;
-
 public class Challenge extends RealmObject {
     public String challenge, challenge_translation;
     public int order;
@@ -22,9 +19,11 @@ public class Challenge extends RealmObject {
 
     public void goToNextState(Boolean wasCorrect) {
         if (wasCorrect) {
-            state = min(state+1, DataModelConstants.CHALLENGE_STATE_DONE);
+            this.state = Math.min(state+1, DataModelConstants
+                    .CHALLENGE_STATE_DONE);
         } else {
-            state = max(state-2, DataModelConstants.CHALLENGE_STATE_NEW);
+            this.state = Math.max(state-2, DataModelConstants
+                    .CHALLENGE_STATE_NEW);
         }
     }
 }
