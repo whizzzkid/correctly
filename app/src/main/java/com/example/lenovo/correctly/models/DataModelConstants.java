@@ -10,4 +10,6 @@ public class DataModelConstants {
     public static int CHALLENGE_STATE_MASTERED = 2;
     public static int CHALLENGE_STATE_REVISE = 3;
     public static int CHALLENGE_STATE_DONE = 4;
+    public static int SKIP_IF_CORRECT = 5;
+    public static int SKIP_IF_NOT_CORRECT = 3;
 }

@@ -34,6 +34,8 @@ import com.example.lenovo.correctly.models.Challenge;
 import com.example.lenovo.correctly.utils.ChallengeManager;
 import com.example.lenovo.correctly.utils.GoogleAudioFormat;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import java.util.Locale;
 import java.util.Map;
 
@@ -99,7 +101,10 @@ public class WordLearnFragment extends Fragment {
         str = str.replace(" ", "");
         transcript = transcript.replace("\"", "").replace(" ", "");
         Boolean correct = (Float.parseFloat(confidence) >= GoogleAudioFormat
-                .CONFIDENCE  && (transcript.compareToIgnoreCase(str) == 0));
+                .CONFIDENCE  && (str.compareToIgnoreCase(StringEscapeUtils
+                .unescapeXml(transcript))  == 0));
+        Log.v("local", StringEscapeUtils.unescapeJava(transcript));
+        Log.v("local", StringEscapeUtils.unescapeJson(transcript));
         if (correct) {
             spannable.setSpan(new ForegroundColorSpan(Color.parseColor
                     ("#008744")), 0, ChallengeText.getText().toString()
@@ -122,7 +127,9 @@ public class WordLearnFragment extends Fragment {
         ChallengeText.setText(spannable);
 
         // Loading new challenge
-        challenge = challengeManager.getNextChallenge(challenge, correct);
+        challengeManager.pushResult(challenge, correct);
+        updateProgress();
+        challenge = challengeManager.getNextChallenge();
         Log.v(TAG, String.valueOf(challenge.order));
         Runnable r = new Runnable() {
             @Override
@@ -130,7 +137,6 @@ public class WordLearnFragment extends Fragment {
                 ChallengeText.setText(challenge.challenge);
                 TranslationText.setText(challenge.challenge_translation);
                 correctImage.setImageResource(R.drawable.transparent);
-                updateProgress();
             }
         };
         Handler h = new Handler();
