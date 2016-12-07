@@ -49,13 +49,14 @@ public class Level extends RealmObject {
         }
     }
 
-    public int getChallengeCount() {
-        return this.challenges.size();
-    }
 
-    public int getChallengeDone() {
-        return this.challenges.where().equalTo("state", DataModelConstants
-                .CHALLENGE_STATE_DONE).findAll().size();
+    public int getProgress() {
+        return (
+                (
+                        Integer.parseInt(
+                                String.valueOf(
+                                        this.challenges.sum("state"))) * 100) /
+                        (4 * this.challenges.size()));
     }
 
     public boolean isLocked() {

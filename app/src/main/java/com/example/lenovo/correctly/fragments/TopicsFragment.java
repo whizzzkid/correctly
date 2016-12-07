@@ -1,12 +1,8 @@
 package com.example.lenovo.correctly.fragments;
 
 import android.app.Fragment;
-
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.os.AsyncTask;
 import android.os.Bundle;
-
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.lenovo.correctly.MainActivity;
 import com.example.lenovo.correctly.R;
 import com.example.lenovo.correctly.adapter.CardAdapter;
 import com.example.lenovo.correctly.entity.CardItem;
@@ -47,41 +42,8 @@ public class TopicsFragment extends Fragment implements CardAdapter.Listener {
         Log.v(TAG, String.valueOf(topic.name));
         Bundle args = new Bundle();
         args.putString("topic", topic.name);
-        FragmentManager fragmentManager= getFragmentManager();
-        FragmentTransaction ft=fragmentManager.beginTransaction();
-        Fragment levelsFragment=new LevelsFragment();
-        levelsFragment.setArguments(args);
-        ft.setCustomAnimations(R.animator.slide_in_left,
-                R.animator.slide_out_right, R.animator.slide_in_left,R.animator.slide_out_right);
-        ft.replace(R.id.fragment_container,levelsFragment,"tt")
-                .addToBackStack("tt").commit();
-
-
-
-
-
-       /* new FragmentLoader(, args,
-                new LevelsFragment()).Load();*/
-
-
-          /*  mFragmentManager = getActivity().getFragmentManager();
-
-
-       Fragment mTextFragmentOne = new LevelsFragment();
-        FragmentTransaction fragmentTransaction = mFragmentManager
-                .beginTransaction();
-        fragmentTransaction.setCustomAnimations(
-                R.animator.fragment_slide_left_enter,
-                R.animator.fragment_slide_right_exit);
-
-        fragmentTransaction.add(R.id.fragment_container, mTextFragmentOne);
-
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();*/
-
-
-
-
+        new FragmentLoader(getFragmentManager(), args, new LevelsFragment())
+                .Load();
     }
 
 
@@ -91,6 +53,7 @@ public class TopicsFragment extends Fragment implements CardAdapter.Listener {
 
 
         View view = inflater.inflate(R.layout.fragment_topics, container, false);
+        getActivity().setTitle(R.string.app_name);
         RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id
                 .recycler_view);
 
