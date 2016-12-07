@@ -84,6 +84,7 @@ public class SentenceLearnFragment extends Fragment {
     }
 
     private void startRecording() {
+        mIsRecording=true;
         mAudioRecord.startRecording();
 
         mRecordingThread = new Thread(new Runnable() {
@@ -395,6 +396,7 @@ public class SentenceLearnFragment extends Fragment {
                         mRecordingBt.clearAnimation();
 
                     } else {
+                        mIsRecording=true;
                         MainIterator = 0;
                         Animation pulse = AnimationUtils.loadAnimation(getContext(), R.anim.pulse);
                         mRecordingBt.startAnimation(pulse);
@@ -428,7 +430,7 @@ public class SentenceLearnFragment extends Fragment {
                 ChallengeText.setText(sb);
                 startRecording();
             } else {
-                mRecordingBt.clearAnimation();
+
                 ChallengeText.setAnimation(AnimationUtils.loadAnimation(getContext(),
                         R.anim.zoom_in_sentence));
                 mIsRecording = false;
