@@ -31,6 +31,7 @@ import com.example.lenovo.correctly.MainActivity;
 import com.example.lenovo.correctly.R;
 import com.example.lenovo.correctly.clients.StreamingRecognizeClient;
 import com.example.lenovo.correctly.models.Challenge;
+import com.example.lenovo.correctly.models.DataModelConstants;
 import com.example.lenovo.correctly.utils.ChallengeManager;
 import com.example.lenovo.correctly.utils.GoogleAudioFormat;
 
@@ -48,7 +49,7 @@ public class WordLearnFragment extends Fragment {
     public TextView progressNew, progressLearned, progressMastered,
             progressRevising, progressDone;
     public ImageView correctImage;
-    public TextView TranslationText, ChallengeText;
+    public TextView TranslationText, ChallengeText, CurrentWordStatus;
     public int i = 0;
     public String confidence = "";
     public String transcript = "";
@@ -100,12 +101,15 @@ public class WordLearnFragment extends Fragment {
         SpannableString spannable = new SpannableString(str);
         str = str.replace(" ", "");
         transcript = transcript.replace("\"", "").replace(" ", "");
-        Boolean correct = (Float.parseFloat(confidence) >= GoogleAudioFormat
-                .CONFIDENCE  && (str.compareToIgnoreCase(StringEscapeUtils
-                .unescapeXml(transcript))  == 0));
-        Log.v("local", StringEscapeUtils.unescapeJava(transcript));
-        Log.v("local", StringEscapeUtils.unescapeJson(transcript));
+        Float confidenceScore = Float.parseFloat(confidence);
+        Boolean isMatch = (str.compareToIgnoreCase(StringEscapeUtils
+                .unescapeXml(transcript)) == 0);
+        Boolean isConfident = (confidenceScore >= GoogleAudioFormat.CONFIDENCE);
+        Boolean correct = (isMatch && isConfident);
+
         if (correct) {
+            CurrentWordStatus.setText(String.format(Locale.getDefault(),
+                    getString(R.string.correct_message), confidenceScore * 100));
             spannable.setSpan(new ForegroundColorSpan(Color.parseColor
                     ("#008744")), 0, ChallengeText.getText().toString()
                     .length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -113,6 +117,14 @@ public class WordLearnFragment extends Fragment {
             correctImage.setAnimation(AnimationUtils.loadAnimation(getContext(),
                     R.anim.zoom_in));
         } else {
+            if (isMatch) {
+                CurrentWordStatus.setText(getString(R.string.low_confidence_msg));
+            } else if (isConfident) {
+                CurrentWordStatus.setText(String.format(Locale.getDefault(),
+                        getString(R.string.high_confidence_incorrect), transcript));
+            } else {
+                CurrentWordStatus.setText(getString(R.string.incorrect_msg));
+            }
             spannable.setSpan(
                     new ForegroundColorSpan(
                             Color.parseColor(
@@ -134,9 +146,7 @@ public class WordLearnFragment extends Fragment {
         Runnable r = new Runnable() {
             @Override
             public void run() {
-                ChallengeText.setText(challenge.challenge);
-                TranslationText.setText(challenge.challenge_translation);
-                correctImage.setImageResource(R.drawable.transparent);
+                updateChallenge();
             }
         };
         Handler h = new Handler();
@@ -245,6 +255,33 @@ public class WordLearnFragment extends Fragment {
         challenge = challengeManager.getFirstChallenge();
     }
 
+    public void updateChallenge() {
+        ChallengeText.setText(challenge.challenge);
+        TranslationText.setText(challenge.challenge_translation);
+        correctImage.setImageResource(R.drawable.transparent);
+        String currentWordStatus = "";
+        if (!challenge.isSeen) {
+            currentWordStatus = "New Word";
+        } else {
+            if (challenge.state == DataModelConstants.CHALLENGE_STATE_NEW) {
+                currentWordStatus = "Seen Before";
+            } else if (challenge.state == DataModelConstants
+                    .CHALLENGE_STATE_LEARNED) {
+                currentWordStatus = "Learning Word";
+            } else if (challenge.state == DataModelConstants
+                    .CHALLENGE_STATE_MASTERED) {
+                currentWordStatus = "Mastering Word";
+            } else if (challenge.state == DataModelConstants
+                    .CHALLENGE_STATE_REVISE) {
+                currentWordStatus = "Revising Word";
+            } else if (challenge.state == DataModelConstants
+                    .CHALLENGE_STATE_DONE) {
+                currentWordStatus = "You Know This Word!";
+            }
+        }
+        CurrentWordStatus.setText(currentWordStatus);
+    }
+
     public void updateProgress() {
         progress = challengeManager.getProgress();
         Log.v(TAG, String.valueOf(progress));
@@ -283,6 +320,7 @@ public class WordLearnFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_challenge,
                 container, false);
+        getActivity().setTitle(topic + " > " + level);
         correctImage = (ImageView) view.findViewById(R.id
                 .correctImage);
         correctImage.setVisibility(View.INVISIBLE);
@@ -308,6 +346,8 @@ public class WordLearnFragment extends Fragment {
                 .TranslationText);
         ChallengeText = (TextView) view.findViewById(R.id
                 .ChallengeText);
+        CurrentWordStatus = (TextView) view.findViewById(R.id
+                .current_word_status);
         mRecordingBt = (ImageButton) view.findViewById(R.id.btn_mic);
         btnPlay = (ImageButton) view.findViewById(R.id.btn_play);
 
@@ -317,14 +357,12 @@ public class WordLearnFragment extends Fragment {
                 R.anim.zoom_in));
         final ForegroundColorSpan fcs = new ForegroundColorSpan(Color.rgb
                 (158, 158, 158));
-        TranslationText.setText(challenge.challenge_translation);
-        ChallengeText.setText(challenge.challenge);
+
         t1 = new TextToSpeech(getContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
                 t1.setLanguage(Locale.FRENCH);
-                // t1.setOnUtteranceProgressListener(mProgressListener);
-
+                t1.setSpeechRate((float) 0.8);
             }
 
 
@@ -336,8 +374,6 @@ public class WordLearnFragment extends Fragment {
                 if (!mIsRecording) {
                     Animation pulse = AnimationUtils.loadAnimation(getContext
                             (), R.anim.pulse);
-                    // btnPlay.startAnimation(pulse);
-
                     String toSpeak = ChallengeText.getText().toString();
                     t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
                 }
@@ -345,7 +381,7 @@ public class WordLearnFragment extends Fragment {
         });
 
         mAudioRecord = GoogleAudioFormat.getAudioRecorder();
-
+        updateChallenge();
         updateProgress();
         initialize();
         mRecordingBt.setOnClickListener(new View.OnClickListener() {
