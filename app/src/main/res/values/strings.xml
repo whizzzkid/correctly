@@ -47,5 +47,15 @@
     <string name="mastered_words">Mastered:</string>
     <string name="revising_words">Revising:</string>
     <string name="done_words">Done:</string>
+    <string name="correct_message" formatted="false">I am %.2f%% confident
+        that you were right,
+        Good Job!</string>
+    <string name="low_confidence_msg">Though you said the right word, you can
+        pronounce better.</string>
+    <string name="high_confidence_incorrect" formatted="false">I am sure you sounded like
+    %s</string>
+    <string name="incorrect_msg">Bad Try, Listen again carefully!</string>
+    <string name="correct_green">#008744</string>
+    <string name="wrong_red">#d62d20</string>
 
 </resources>

@@ -5,6 +5,7 @@ import io.realm.RealmObject;
 public class Challenge extends RealmObject {
     public String challenge, challenge_translation;
     public int order;
+    public boolean isSeen = false;
     public int state = DataModelConstants.CHALLENGE_STATE_NEW;
 
     public void setOrder(int order) {
@@ -18,6 +19,7 @@ public class Challenge extends RealmObject {
     }
 
     public void goToNextState(Boolean wasCorrect) {
+        this.isSeen = true;
         if (wasCorrect) {
             this.state = Math.min(state+1, DataModelConstants
                     .CHALLENGE_STATE_DONE);

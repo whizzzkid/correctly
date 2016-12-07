@@ -5,6 +5,7 @@ import android.util.SparseArray;
 
 import com.example.lenovo.correctly.models.Challenge;
 import com.example.lenovo.correctly.models.DataModelConstants;
+import com.example.lenovo.correctly.models.Level;
 import com.example.lenovo.correctly.models.Topic;
 
 import java.util.HashMap;
@@ -13,48 +14,52 @@ import java.util.Map;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmQuery;
+import io.realm.RealmResults;
 
 public class ChallengeManager {
     private RealmList<Challenge> challenges;
     private Realm realm = Realm.getDefaultInstance();
     private SparseArray<Challenge> challengeQueue = new SparseArray<>();
     private int challengeCounter = 1;
-    private int lastChallengeOrder = 0;
-    private String topic, level;
+    private String topic_name, level_name;
+    private Level level;
+    private Topic topic;
     public ChallengeManager(String topic, String level) {
-        this.topic = topic;
-        this.level = level;
-        fetchChallenges();
+        this.topic_name = topic;
+        this.level_name = level;
+        this.topic = realm.where(Topic.class).equalTo(
+                "topic_name", topic_name).findFirst();
+        this.level = this.topic.getAllLevels().where()
+                .equalTo("level_name", level_name).findFirst();
+        this.challenges = this.level.challenges;
     }
 
-    public void fetchChallenges() {
-        challenges = realm.where(Topic.class).equalTo(
-                "topic_name", topic).findFirst().getAllLevels().where()
-                .equalTo("level_name", level).findFirst().challenges;
-    }
-
-    public void pushResult(final Challenge challenge, final
-    Boolean wasCorrect) {
+    public void pushResult(final Challenge challenge, final Boolean
+            wasCorrect) {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 challenge.goToNextState(wasCorrect);
             }
         });
-        int position = challengeCounter;
+        boolean existsInQueue = false;
         for (int i = 0; i<challengeQueue.size(); i++) {
             if(challengeQueue.valueAt(i).order == challenge.order) {
-                position = challengeQueue.keyAt(i);
+                existsInQueue = true;
+                break;
             }
         }
-        if (wasCorrect) {
-            position += challenge.state + DataModelConstants.SKIP_IF_CORRECT;
-        } else {
-            position += DataModelConstants.SKIP_IF_NOT_CORRECT;
+        if (!existsInQueue) {
+            int position = challengeCounter;
+            if (wasCorrect) {
+                position += challenge.state + DataModelConstants.SKIP_IF_CORRECT;
+            } else {
+                position += DataModelConstants.SKIP_IF_NOT_CORRECT;
+            }
+            placeInQueue(challenge, position);
+            Log.v("position", String.valueOf(position));
+            Log.v("queue", String.valueOf(challengeQueue));
         }
-        placeInQueue(challenge, position);
-        Log.v("position", String.valueOf(position));
-        Log.v("queue", String.valueOf(challengeQueue));
     }
 
     private void placeInQueue(Challenge challenge, int position) {
@@ -93,21 +98,21 @@ public class ChallengeManager {
                 }
             }
 
-            newChallenge = find.findAllSorted("state").first();
-            if (newChallenge == null) {
+            RealmResults<Challenge> findChallenge = find.findAllSorted("state");
+            if (findChallenge.size() == 0 && challengeQueue.size() != 0) {
                 newChallenge = challengeQueue.valueAt(firstFound);
+            } else {
+                newChallenge = find.findAllSorted("state").first();
             }
-            lastChallengeOrder = newChallenge.order;
         }
         return newChallenge;
     }
 
     public Challenge getFirstChallenge() {
-        return this.challenges.first();
+        return this.challenges.where().findAllSorted("state").first();
     }
     
     public Map<String, Integer> getProgress() {
-        fetchChallenges();
         Map<String, Integer> progress = new HashMap<String, Integer>();
         progress.put("total", this.challenges.size());
         progress.put("new", (int) this.challenges.where().equalTo("state",

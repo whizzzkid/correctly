@@ -6,16 +6,16 @@
                 tools:context="com.example.lenovo.correctly.fragments.WordLearnFragment">
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginRight="10dp"
-        android:id="@+id/liner_layout_one"
-        android:weightSum="1"
-        android:background="@drawable/shape_words">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginRight="10dp"
+            android:id="@+id/liner_layout_one"
+            android:weightSum="1"
+            android:background="@drawable/shape_words">
 
         <TextView
             android:layout_width="match_parent"
@@ -57,17 +57,27 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="43dp"
-        android:weightSum="1"
-        android:background="@drawable/shape_sentences"
-        android:layout_below="@+id/liner_layout_one"
-        android:layout_marginTop="43dp">
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="30dp"
+            android:weightSum="1"
+            android:background="@drawable/shape_sentences"
+            android:layout_below="@+id/liner_layout_one"
+            android:layout_marginTop="30dp">
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="25sp"
+                android:ems="30"
+                android:id="@+id/current_word_status"
+                android:textAlignment="center"
+                android:minHeight="70dp"
+                />
 
         <TextView
             android:layout_width="match_parent"
@@ -79,11 +89,11 @@
             android:textAlignment="viewStart"/>
 
         <ProgressBar
-            style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/new_words_progress"
-            android:progressTint="#99D478"
+                style="@style/CustomProgressBarGreen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/new_words_progress"
+                android:progressTint="#008744"
                 />
 
         <TextView
@@ -95,11 +105,11 @@
             android:id="@+id/learned_words_text"
             android:textAlignment="viewStart"/>
         <ProgressBar
-            style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/learned_words_progress"
-            android:progressTint="#71CC49"
+                style="@style/CustomProgressBarGreen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/learned_words_progress"
+                android:progressTint="#ffa700"
                 />
 
         <TextView
@@ -111,11 +121,11 @@
             android:id="@+id/mastered_words_text"
             android:textAlignment="viewStart"/>
         <ProgressBar
-            style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/mastered_words_progress"
-            android:progressTint="#1F7B24"
+                style="@style/CustomProgressBarGreen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/mastered_words_progress"
+                android:progressTint="#0057e7"
                 />
 
         <TextView
@@ -127,27 +137,28 @@
             android:id="@+id/revising_words_text"
             android:textAlignment="viewStart"/>
         <ProgressBar
-            style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/revising_words_progress"
-            android:progressTint="#043B04"
+                style="@style/CustomProgressBarGreen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/revising_words_progress"
+                android:progressTint="#043B04"
                 />
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/done_words"
-            android:textSize="20sp"
-            android:ems="30"
-            android:id="@+id/done_words_text"
-            android:textAlignment="viewStart"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/done_words"
+                android:textSize="20sp"
+                android:ems="30"
+                android:id="@+id/done_words_text"
+                android:textAlignment="viewStart"
+                />
         <ProgressBar
-            style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/done_words_progress"
-            android:progressTint="#031C06"
+                style="@style/CustomProgressBarGreen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/done_words_progress"
+                android:progressTint="#d62d20"
                 />
 
     </LinearLayout>

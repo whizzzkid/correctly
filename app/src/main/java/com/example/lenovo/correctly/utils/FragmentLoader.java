@@ -19,13 +19,16 @@ public class FragmentLoader {
     }
 
     public void Load () {
-        FragmentTransaction replacement = this.fragmentManager
-                .beginTransaction().replace(R.id.fragment_container,
-                this.newFragment);
-        if (this.fragmentManager.findFragmentById(R.id
-                .fragment_container) != null) {
-            replacement.addToBackStack(null);
+        FragmentTransaction animatedReplace = fragmentManager
+                .beginTransaction().setCustomAnimations(
+                        R.animator.slide_in_left,
+                        R.animator.slide_out_right,
+                        R.animator.slide_in_left,
+                        R.animator.slide_out_right).replace(R.id.fragment_container,
+                        newFragment);
+        if (fragmentManager.findFragmentById(R.id.fragment_container) != null) {
+            animatedReplace.addToBackStack(null);
         }
-        replacement.commit();
+        animatedReplace.commit();
     }
 }

@@ -14,6 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,9 +22,14 @@ import android.view.View;
 
 import com.example.lenovo.correctly.fragments.TopicsFragment;
 import com.example.lenovo.correctly.models.Challenge;
+import com.example.lenovo.correctly.models.DataModelConstants;
 import com.example.lenovo.correctly.models.Level;
 import com.example.lenovo.correctly.models.Topic;
 import com.example.lenovo.correctly.utils.FragmentLoader;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -152,8 +158,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView
                                     realm, 1, "Magasin", "Store"));
                     travel_level1.challenges.add(
                             createChallenge(
-                                    realm, 0, "Bonjour Voici le$Magasin",
-                                    "Good Morning This is The Store"
+                                    realm, 0, "Bonjour voici le$magasin",
+                                    "Hello this is the store"
                             )
                     );
 
@@ -179,19 +185,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView
                     school_level0.challenges.add(
                             createChallenge(realm, 9, "Blanche", "White"));
                     school_level1.challenges.add(
-                            createChallenge(realm, 0, "Mon crayon est rouge",
+                            createChallenge(realm, 0, "Mon crayon est$rouge",
                                     "My Pencil Is Red"));
                     school_level1.challenges.add(
-                            createChallenge(realm, 1, "Le$garçon aime faire " +
-                                    "de$la natation", "The Boy Likes To Swim"));
-                    school_level1.challenges.add(
-                            createChallenge(realm, 2, "Nous chantons des " +
+                            createChallenge(realm, 1, "Nous chantons des " +
                                     "chansons", "We Sing Songs"));
                     school_level1.challenges.add(
-                            createChallenge(realm, 3, "Elle aime cuisiner",
+                            createChallenge(realm, 2, "Elle aime cuisiner",
                                     "She Likes To Cook"));
                     school_level1.challenges.add(
-                            createChallenge(realm, 0, "Ma$gomme est blanche",
+                            createChallenge(realm, 3, "Ma$gomme est blanche",
                                     "My Eraser Is White"));
 
                     // Addding everything back.
@@ -283,7 +286,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView
             }
 
             case R.id.nav_share: {
-                String shareBody = "My progress:";
+                Realm realm = Realm.getDefaultInstance();
+                RealmResults<Challenge> wordsLearned = realm.where(Challenge.class).equalTo("state",
+                        DataModelConstants.CHALLENGE_STATE_DONE).findAll();
+                int numLearned = wordsLearned.size();
+                Iterator<Challenge> words = wordsLearned.iterator();
+                Set<String> wordsLearn = new HashSet<>();
+
+                while (words.hasNext()) {
+                    Challenge word = words.next();
+                    wordsLearn.add(word.challenge);
+                }
+
+                String shareBody = "I learned " + numLearned + " new french " +
+                        "words: " + TextUtils.join(", ", wordsLearn);
                 Intent sharingIntent = new Intent(android.content.Intent
                         .ACTION_SEND);
                 sharingIntent.setType("text/plain");
