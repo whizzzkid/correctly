@@ -1,8 +1,6 @@
 package com.example.lenovo.correctly.fragments;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -48,6 +46,7 @@ public class LevelsFragment extends Fragment implements CardAdapter.Listener {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_levels, container,
                 false);
+        getActivity().setTitle(topic);
         RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id
                 .recycler_view);
 
@@ -66,40 +65,18 @@ public class LevelsFragment extends Fragment implements CardAdapter.Listener {
     @Override
     public void onItemClicked(CardItem level) {
         Log.v("test", level.name);
+        Fragment fragment = null;
         Bundle args = new Bundle();
+        args.putString("topic", this.topic);
         if (level.name.equals("Basic Words")) {
-            args.putString("challenge", "Bonjour");
-            args.putString("translation", "Good Morning");
-            /*new FragmentLoader(getFragmentManager(), args,
-                    new WordLearnFragment()).Load();*/
-
-            FragmentManager fragmentManager= getFragmentManager();
-            FragmentTransaction ft=fragmentManager.beginTransaction();
-            Fragment wordsFragment=new WordLearnFragment();
-            wordsFragment.setArguments(args);
-            ft.setCustomAnimations(R.animator.slide_in_left,
-                    R.animator.slide_out_right, R.animator.slide_in_left,R.animator.slide_out_right);
-            ft.replace(R.id.fragment_container,wordsFragment,"tw")
-                    .addToBackStack("tw").commit();
-
-
-
-
+            args.putString("level", "Basic Words");
+            fragment = new WordLearnFragment();
         }
         if (level.name.equals("Sentences")) {
-            args.putString("challenge", "Bonjour, voici le magasin.");
-            args.putString("translation", "Good morning, here is the store.");
-           /* new FragmentLoader(getFragmentManager(), args,
-                    new SentenceLearnFragment()).Load();*/
-            FragmentManager fragmentManager= getFragmentManager();
-            FragmentTransaction ft=fragmentManager.beginTransaction();
-            Fragment sentencesFragment=new SentenceLearnFragment();
-            sentencesFragment.setArguments(args);
-            ft.setCustomAnimations(R.animator.slide_in_left,
-                    R.animator.slide_out_right, R.animator.slide_in_left,R.animator.slide_out_right);
-            ft.replace(R.id.fragment_container,sentencesFragment,"ts")
-                    .addToBackStack("ts").commit();
+            args.putString("level", "Sentences");
+            fragment = new SentenceLearnFragment();
         }
+        new FragmentLoader(getFragmentManager(), args, fragment).Load();
     }
 
     class LoadLevelsTask extends AsyncTask<Void, Void, List<CardItem>> {
@@ -123,6 +100,7 @@ public class LevelsFragment extends Fragment implements CardAdapter.Listener {
                 item.image = level.getLevelImg();
                 item.imageBitmap = BitmapUtils.getBitmapFromAsset(
                         getContext().getAssets(), item.image);
+                item.progress = level.getProgress();
                 items.add(item);
             }
             return items;

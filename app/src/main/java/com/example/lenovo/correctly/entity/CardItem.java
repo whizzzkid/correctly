@@ -6,5 +6,5 @@ public class CardItem {
     public String name;
     public String image;
     public Bitmap imageBitmap;
-    public int progress;
+    public int progress = -1;
 }

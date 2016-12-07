@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.lenovo.correctly.R;
@@ -13,6 +14,7 @@ import com.example.lenovo.correctly.entity.CardItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
         implements View.OnClickListener {
@@ -38,8 +40,23 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         CardItem item = mItems.get(i);
-        viewHolder.tvMovie.setText(item.name);
+        String title;
+        if (item.progress > -1) {
+            String progressMsg;
+            if (item.progress == 0) {
+                progressMsg = " [New Level]";
+            } else {
+                progressMsg = String.format(Locale.getDefault(), " [%d%% " +
+                        "Complete]", item.progress);
+            }
+            title = String.format("%s%s", item.name,
+                    progressMsg);
+        } else {
+            title = item.name;
+        }
+        viewHolder.cardTitle.setText(title);
         viewHolder.imgThumbnail.setImageBitmap(item.imageBitmap);
+        viewHolder.progressBar.setProgress(item.progress);
         if (mListener != null) {
             viewHolder.cardView.setOnClickListener(this);
             viewHolder.cardView.setTag(item);
@@ -69,14 +86,17 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 
     class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imgThumbnail;
-        TextView tvMovie;
+        TextView cardTitle;
         CardView cardView;
+        ProgressBar progressBar;
 
         ViewHolder(View itemView) {
             super(itemView);
-            imgThumbnail = (ImageView) itemView.findViewById(R.id.img_thumbnail);
-            tvMovie = (TextView) itemView.findViewById(R.id.card_title);
+            imgThumbnail = (ImageView) itemView.findViewById(R.id
+                    .img_thumbnail);
+            cardTitle = (TextView) itemView.findViewById(R.id.card_title);
             cardView = (CardView) itemView.findViewById(R.id.card_view);
+            progressBar = (ProgressBar) itemView.findViewById(R.id.progress);
         }
     }
 }
