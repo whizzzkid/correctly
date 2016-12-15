@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView
                     travel_level1.challenges.add(
                             createChallenge(
                                     realm, 0, "Bonjour voici le$magasin",
-                                    "Hello this is the store"
+                                    "Good Morning Here is the Store."
                             )
                     );
 
@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView
                     school_level0.challenges.add(
                             createChallenge(realm, 0, "Bonjour", "Good Morning"));
                     school_level0.challenges.add(
-                            createChallenge(realm, 1, "Fille", "Boy"));
+                            createChallenge(realm, 1, "Fille", "Girl"));
                     school_level0.challenges.add(
                             createChallenge(realm, 2, "Aimer", "Like"));
                     school_level0.challenges.add(
