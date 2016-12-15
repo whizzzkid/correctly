@@ -1,10 +1,10 @@
 # Correctly - Pronounce Better
-This is an android app which helps you aquire new language faster. To get started we're experimenting with learning French for Englist speakers.
+This is an android app which helps you aquire new language faster. To get started we're experimenting with learning French for English speakers.
 
 # Motivation
-This is a applied research project based on this [course](http://www.eecg.utoronto.ca/~jayar/ece1778/project.html). We'll be adding our final project here soon.
+This is a applied research project based on this [course](http://www.eecg.utoronto.ca/~jayar/ece1778/project.html). We'll be adding our final project report here soon.
 
-#Team
+# Team
 
 - Venis Nasr (Second Language Acquisition Expert)
     - *M.Ed. Candidate, Ontario Institute for Studies in Education, University of Toronto*
