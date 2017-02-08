@@ -57,6 +57,9 @@ android {
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
         resolutionStrategy.force 'com.android.support:support-annotations:23.1.0'
     }
+    lintOptions {
+        abortOnError false
+    }
 }
 
 def grpcVersion = '0.15.0'
