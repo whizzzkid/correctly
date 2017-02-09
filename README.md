@@ -3,6 +3,7 @@
 This is an android app which helps you aquire new language faster. To get started we're experimenting with learning French for English speakers.
 
 [![Build Status](https://travis-ci.org/whizzzkid/correctly.svg?branch=master)](https://travis-ci.org/whizzzkid/correctly)
+[![codebeat badge](https://codebeat.co/badges/48b1471f-9a69-49a1-9f29-8fb1ceab60df)](https://codebeat.co/projects/github-com-whizzzkid-correctly)
 
 # Motivation
 This is a applied research project based on this [course](http://www.eecg.utoronto.ca/~jayar/ece1778/project.html). We'll be adding our final project report here soon.
